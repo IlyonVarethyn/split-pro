@@ -37,10 +37,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
     <div className="bg-background h-full w-full">
       <div
         vaul-drawer-wrapper=""
-        className={clsx(
-          'bg-background mx-auto flex h-full w-full flex-col lg:max-w-3xl lg:flex-row',
-          hideAppBar ? '' : '',
-        )}
+        className="bg-background mx-auto flex h-full w-full flex-col lg:max-w-3xl lg:flex-row"
       >
         <nav className="item-center -ml-[170px] hidden w-[170px] px-4 py-4 lg:flex lg:flex-col lg:gap-2">
           <Link href="/balances" className="mb-8 flex items-center gap-2">
@@ -80,12 +77,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({
           />
         </nav>
         <div
-          className="w-full overflow-auto lg:border-x lg:border-gray-900 lg:px-6"
+          className="lg:border-foreground/8 w-full overflow-auto lg:border-x lg:px-6"
           id="mainlayout"
         >
           {title ? (
             <div className="mb-2 flex items-center justify-between px-4 py-4">
-              <div className="text-3xl font-bold text-gray-200">{title}</div>
+              <div className="text-foreground text-[28px] leading-tight font-bold tracking-[-0.3px]">
+                {title}
+              </div>
               {actions}
             </div>
           ) : null}
@@ -98,42 +97,47 @@ const MainLayout: React.FC<MainLayoutProps> = ({
               children
             )}
           </div>
-          <div className="h-28 lg:h-0" />
+          {!hideAppBar && <div className="h-28 lg:h-0" />}
         </div>
       </div>
 
-      <nav className="bg-opacity-80 fixed bottom-0 flex w-full justify-between border-t px-2 pb-4 shadow-xs backdrop-blur-lg lg:hidden">
-        <NavItem
-          title={t?.('navigation.balances') ?? 'Balances'}
-          Icon={SolidScaleIcon}
-          link="/balances"
-          currentPath={currentPath}
-        />
-        <NavItem
-          title={t?.('navigation.groups') ?? 'Groups'}
-          Icon={SolidUserGroupIcon}
-          link="/groups"
-          currentPath={currentPath}
-        />
-        <NavItem
-          title={t?.('navigation.add') ?? 'Add'}
-          Icon={SolidPlusCircleIcon}
-          link="/add"
-          currentPath={currentPath}
-        />
-        <NavItem
-          title={t?.('navigation.activity') ?? 'Activity'}
-          Icon={SolidListBulletIcon}
-          link="/activity"
-          currentPath={currentPath}
-        />
-        <NavItem
-          title={t?.('navigation.account') ?? 'Account'}
-          Icon={SolidUserCircleIcon}
-          link="/account"
-          currentPath={currentPath}
-        />
-      </nav>
+      {!hideAppBar && (
+        <nav
+          className="border-foreground/10 bg-foreground/8 fixed left-1/2 z-40 flex w-fit -translate-x-1/2 gap-1 rounded-full border p-2 backdrop-blur-xl lg:hidden"
+          style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
+        >
+          <NavItem
+            title={t?.('navigation.balances') ?? 'Balances'}
+            Icon={SolidScaleIcon}
+            link="/balances"
+            currentPath={currentPath}
+          />
+          <NavItem
+            title={t?.('navigation.groups') ?? 'Groups'}
+            Icon={SolidUserGroupIcon}
+            link="/groups"
+            currentPath={currentPath}
+          />
+          <NavItem
+            title={t?.('navigation.add') ?? 'Add'}
+            Icon={SolidPlusCircleIcon}
+            link="/add"
+            currentPath={currentPath}
+          />
+          <NavItem
+            title={t?.('navigation.activity') ?? 'Activity'}
+            Icon={SolidListBulletIcon}
+            link="/activity"
+            currentPath={currentPath}
+          />
+          <NavItem
+            title={t?.('navigation.account') ?? 'Account'}
+            Icon={SolidUserCircleIcon}
+            link="/account"
+            currentPath={currentPath}
+          />
+        </nav>
+      )}
     </div>
   );
 };
@@ -151,12 +155,13 @@ const NavItem: React.FC<NavItemProps> = ({ title, Icon, link, currentPath }) => 
   return (
     <Link
       href={link}
-      className={clsx('flex w-32 flex-col items-center justify-between gap-2 py-4')}
+      className={clsx(
+        'flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-medium transition-colors',
+        isActive ? 'bg-primary text-primary-foreground' : 'text-foreground/50',
+      )}
     >
-      <Icon className={clsx('h-7 w-7', isActive ? 'text-cyan-500' : 'text-gray-600')} />
-      <span className={clsx('text-xs', isActive ? 'font-medium text-cyan-500' : 'text-gray-500')}>
-        {title}
-      </span>
+      <Icon className="h-4 w-4" />
+      <span>{title}</span>
     </Link>
   );
 };
@@ -166,9 +171,9 @@ const NavItemDesktop: React.FC<NavItemProps> = ({ title, Icon, link, currentPath
 
   return (
     <Link href={link} className={clsx('flex w-[150px] items-center gap-2 py-4')}>
-      <Icon className={clsx('h-7 w-7', isActive ? 'text-cyan-500' : 'text-gray-600')} />
+      <Icon className={clsx('h-7 w-7', isActive ? 'text-primary' : 'text-foreground/50')} />
       <span
-        className={clsx('capitalize', isActive ? 'font-medium text-cyan-500' : 'text-gray-500')}
+        className={clsx('capitalize', isActive ? 'text-primary font-medium' : 'text-foreground/50')}
       >
         {title}
       </span>
