@@ -49,12 +49,12 @@ const ImportSpliwisePage: NextPageWithUser = () => {
 
       setUsersWithBalance(friendsWithOutStandingBalance);
       setSelectedUsers(
-        friendsWithOutStandingBalance.reduce(
+        friendsWithOutStandingBalance.reduce< Record<string, boolean>>(
           (acc, user) => {
             acc[user.id] = true;
             return acc;
           },
-          {} as Record<string, boolean>,
+          {},
         ),
       );
 
@@ -64,12 +64,12 @@ const ImportSpliwisePage: NextPageWithUser = () => {
 
       setGroups(_groups);
       setSelectedGroups(
-        _groups.reduce(
+        _groups.reduce< Record<string, boolean>>(
           (acc, group) => {
             acc[group.id] = true;
             return acc;
           },
-          {} as Record<string, boolean>,
+          {},
         ),
       );
     } catch (e) {
@@ -124,7 +124,10 @@ const ImportSpliwisePage: NextPageWithUser = () => {
           </div>
         </div>
         <div className="mt-4 flex items-center gap-4">
-          <label htmlFor="splitwise-json" className="w-full cursor-pointer rounded border">
+          <label
+            htmlFor="splitwise-json"
+            className="bg-foreground/8 w-full cursor-pointer rounded-[0.875rem]"
+          >
             <div className="flex cursor-pointer px-3 py-[6px]">
               <div className="flex items-center border-r pr-4">
                 <PaperClipIcon className="mr-2 h-4 w-4" />{' '}
