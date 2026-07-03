@@ -3,7 +3,6 @@ import { type User } from 'next-auth';
 import Head from 'next/head';
 import Link from 'next/link';
 import MainLayout from '~/components/Layout/MainLayout';
-import { EntityAvatar } from '~/components/ui/avatar';
 import { type NextPageWithUser } from '~/types';
 import { api } from '~/utils/api';
 import { getCurrencyHelpers } from '~/utils/numbers';
@@ -75,7 +74,7 @@ const ActivityPage: NextPageWithUser = ({ user }) => {
         actions={actions}
         loading={expensesQuery.isPending}
       >
-        <div className="flex flex-col gap-4">
+        <div className="divide-foreground/8 flex flex-col divide-y">
           {!expensesQuery.data?.length ? (
             <div className="mt-[30vh] text-center text-gray-400">{t('ui.no_activity')}</div>
           ) : null}
@@ -86,10 +85,12 @@ const ActivityPage: NextPageWithUser = ({ user }) => {
             });
 
             return (
-              <Link href={`/expenses/${e.expenseId}`} key={e.expenseId} className="flex gap-2">
-                <div className="mt-1">
-                  <EntityAvatar entity={e.expense.paidByUser} size={30} />
-                </div>
+              <Link
+                href={`/expenses/${e.expenseId}`}
+                key={e.expenseId}
+                className="flex gap-3.5 py-4"
+              >
+                <div className="bg-primary mt-2 size-2 flex-shrink-0 rounded-full" />
                 <div>
                   {e.expense.deletedByUser ? (
                     <p className="text-red-500 opacity-70">
