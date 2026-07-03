@@ -131,7 +131,7 @@ export const SelectUserOrGroup: React.FC<{
         <div className="flex flex-wrap justify-center gap-x-4">
           {enableSendingInvites && (
             <Button
-              className="mt-4 text-cyan-500 hover:text-cyan-500"
+              className="text-primary mt-4 rounded-full"
               variant="outline"
               disabled={!isEmail.success}
               onClick={handleAddEmailClickFalse}
@@ -141,7 +141,7 @@ export const SelectUserOrGroup: React.FC<{
             </Button>
           )}
           <Button
-            className="mt-4 text-cyan-500 hover:text-cyan-500"
+            className="text-primary mt-4 rounded-full"
             variant="outline"
             disabled={!isEmail.success}
             onClick={handleAddEmailClickFalse}
@@ -158,7 +158,7 @@ export const SelectUserOrGroup: React.FC<{
             {filteredFriends.map((f) => (
               <button
                 key={f.id}
-                className="flex w-full items-center justify-between border-b border-gray-900 py-4"
+                className="border-foreground/8 flex w-full items-center justify-between border-b py-4"
                 onClick={() => handleFriendClick(f)}
               >
                 <div className="flex min-w-0 items-center gap-4">
@@ -183,7 +183,7 @@ export const SelectUserOrGroup: React.FC<{
               {filteredGroups.map((g) => (
                 <button
                   key={g.groupId}
-                  className="border-b border-gray-900 py-4"
+                  className="border-foreground/8 border-b py-4"
                   onClick={() => onGroupSelect(g.group)}
                 >
                   <div className="flex min-w-0 items-center gap-4">

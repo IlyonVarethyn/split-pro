@@ -133,7 +133,7 @@ const AddMembers: React.FC<{
         <div className="flex justify-center gap-4">
           {enableSendingInvites && (
             <Button
-              className="mt-4 w-full text-cyan-500"
+              className="text-primary mt-4 w-full rounded-full"
               variant="outline"
               disabled={!isEmail.success}
               onClick={() => onAddEmailClick(true)}
@@ -145,7 +145,7 @@ const AddMembers: React.FC<{
             </Button>
           )}
           <Button
-            className="mt-4 w-full text-cyan-500"
+            className="text-primary mt-4 w-full rounded-full"
             variant="outline"
             disabled={!isEmail.success}
             onClick={() => onAddEmailClick(false)}
@@ -157,12 +157,12 @@ const AddMembers: React.FC<{
           </Button>
         </div>
       </div>
-      <div className="mt-4 flex flex-col gap-4">
+      <div className="divide-foreground/8 mt-4 flex flex-col divide-y">
         {filteredUsers?.map((friend) => (
           <Button
             variant="ghost"
             key={friend.id}
-            className="focus:text-foreground flex items-center justify-between px-0"
+            className="focus:text-foreground flex items-center justify-between px-0 py-3.5"
             onClick={() => onUserSelect(friend.id)}
           >
             <div className={clsx('flex items-center gap-2 rounded-md py-1.5')}>
