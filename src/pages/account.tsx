@@ -8,6 +8,7 @@ import {
   HeartHandshakeIcon,
   Languages,
   Star,
+  SunMoon,
 } from 'lucide-react';
 import type { GetServerSideProps } from 'next';
 import { signOut } from 'next-auth/react';
@@ -19,6 +20,7 @@ import { toast } from 'sonner';
 import { AccountButton } from '~/components/Account/AccountButton';
 import { DownloadAppDrawer } from '~/components/Account/DownloadAppDrawer';
 import { LanguagePicker } from '~/components/Account/LanguagePicker';
+import { ThemePicker } from '~/components/Account/ThemePicker';
 import { SubmitFeedback } from '~/components/Account/SubmitFeedback';
 import { SubscribeNotification } from '~/components/Account/SubscribeNotification';
 import { UpdateName } from '~/components/Account/UpdateDetails';
@@ -124,6 +126,13 @@ const AccountPage: NextPageWithUser<{
               {t('account.change_language')}
             </AccountButton>
           </LanguagePicker>
+
+          <ThemePicker>
+            <AccountButton>
+              <SunMoon className="size-5 text-cyan-500" />
+              {t('account.theme')}
+            </AccountButton>
+          </ThemePicker>
 
           <BankConnection
             bankConnectionEnabled={bankConnectionEnabled}

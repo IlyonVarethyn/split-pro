@@ -9,6 +9,13 @@
       "placeholder": "Select a language",
       "title": "Select a language"
     },
+    "theme": "Theme",
+    "theme_details": {
+      "title": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
     "download_app": "Download app",
     "download_app_details": {
       "download_as_pwa": "You can download SplitPro as a PWA to your home screen.",
