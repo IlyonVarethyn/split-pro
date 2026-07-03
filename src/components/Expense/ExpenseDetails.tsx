@@ -61,7 +61,7 @@ const ExpenseDetails: React.FC<ExpenseDetailsProps> = ({ user, expense }) => {
     <>
       <div className="mb-4 flex items-start justify-between gap-2">
         <div className="flex items-start gap-4">
-          <div className="rounded-lg border p-2 text-xl">
+          <div className="bg-foreground/8 rounded-[0.875rem] p-2.5 text-xl">
             <CategoryIcon category={expense.category} className="text-gray-400" size={24} />
           </div>
           <div className="flex flex-col gap-2">
@@ -136,7 +136,7 @@ const ExpenseDetails: React.FC<ExpenseDetailsProps> = ({ user, expense }) => {
           {toUIString(expense.amount)}
         </span>
       </div>
-      <div className="mt-4 ml-14 flex flex-col gap-4">
+      <div className="divide-foreground/8 mt-4 ml-14 flex flex-col divide-y">
         {expense.expenseParticipants
           .filter((participant) => 0n !== participant.amount)
           .map((participant) => (
@@ -179,7 +179,7 @@ const ExpenseParticipantEntry: React.FC<{
   const amountColorClass = isPositive ? 'text-positive' : 'text-negative';
 
   return (
-    <div key={participant.userId} className="flex items-center gap-2 text-sm">
+    <div key={participant.userId} className="flex items-center gap-2 py-3 text-sm">
       <Link href={isCurrentUser ? '/balances' : `/balances/${participant.userId}`}>
         <Button variant="outline" size="sm" className="gap-2 px-2">
           <EntityAvatar entity={participant.user} size={25} />
