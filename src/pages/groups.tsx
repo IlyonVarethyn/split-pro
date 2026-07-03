@@ -55,7 +55,7 @@ const BalancePage: NextPageWithUser = () => {
         <title>{t('navigation.groups')}</title>
       </Head>
       <MainLayout title={t('navigation.groups')} actions={actions} loading={groupQuery.isPending}>
-        <div className="mt-7 flex flex-col gap-8 pb-36">
+        <div className="mt-7 flex flex-col gap-4 pb-36">
           {0 === groupQuery.data?.length ? (
             <div className="mt-[30vh] flex flex-col items-center justify-center gap-20">
               <CreateGroup>
