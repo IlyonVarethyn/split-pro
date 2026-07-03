@@ -161,7 +161,7 @@ const NavItem: React.FC<NavItemProps> = ({ title, Icon, link, currentPath }) => 
       )}
     >
       <Icon className="h-4 w-4" />
-      <span>{title}</span>
+      <span className={isActive ? undefined : 'sr-only'}>{title}</span>
     </Link>
   );
 };
