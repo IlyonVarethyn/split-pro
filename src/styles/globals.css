@@ -11,8 +11,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --color-positive: var(--color-emerald-500);
-  --color-negative: var(--color-orange-600);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
 
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
@@ -144,21 +144,24 @@
   --input: hsl(220 13% 91%);
   --ring: hsl(224 71.4% 4.1%);
 
-  --radius: 0.5rem;
+  --positive: var(--color-emerald-500);
+  --negative: var(--color-orange-600);
+
+  --radius: 0.875rem;
 }
 
 .dark {
-  --background: hsl(224 71.4% 4.1%);
-  --foreground: hsl(222 2% 83%);
+  --background: hsl(200 13% 4.5%);
+  --foreground: hsl(60 7% 94.5%);
 
-  --card: hsl(224 71.4% 4.1%);
+  --card: hsl(200 13% 4.5%);
   --card-foreground: hsl(210 20% 98%);
 
-  --popover: hsl(224 71.4% 4.1%);
+  --popover: hsl(200 13% 4.5%);
   --popover-foreground: hsl(210 20% 98%);
 
-  --primary: hsl(189 94% 43%);
-  --primary-foreground: hsl(220.9 39.3% 11%);
+  --primary: hsl(189 94% 53%);
+  --primary-foreground: hsl(188 73% 9%);
 
   --secondary: hsl(215 27.9% 16.9%);
   --secondary-foreground: hsl(210 20% 98%);
@@ -175,6 +178,9 @@
   --border: hsl(215 27.9% 16.9%);
   --input: hsl(215 27.9% 16.9%);
   --ring: hsl(221 39% 11%);
+
+  --positive: var(--color-emerald-400);
+  --negative: var(--color-orange-400);
 }
 
 @layer base {
