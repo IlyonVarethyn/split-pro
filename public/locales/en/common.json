@@ -311,6 +311,8 @@
       "title": "Group statistics",
       "total_expenses": "Total expenses"
     },
+    "member_count_one": "{{count}} participant",
+    "member_count_other": "{{count}} participants",
     "messages": {
       "default_split_cleared": "Default split cleared",
       "default_split_updated": "Default split updated",

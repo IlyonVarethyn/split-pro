@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { useEffect, useMemo } from 'react';
 import { BalanceEntry } from '~/components/Expense/BalanceEntry';
 import { CreateGroup } from '~/components/group/CreateGroup';
+import { GroupCard } from '~/components/group/GroupCard';
 import MainLayout from '~/components/Layout/MainLayout';
 import { Button } from '~/components/ui/button';
 import {
@@ -68,11 +69,12 @@ const BalancePage: NextPageWithUser = () => {
             <>
               {/* Active Groups */}
               {groupQuery.data?.map((g) => (
-                <BalanceEntry
+                <GroupCard
                   key={g.id}
                   id={g.id}
                   entity={g}
                   balances={transformBalances(g.balances)}
+                  memberCount={g.memberCount}
                 />
               ))}
 

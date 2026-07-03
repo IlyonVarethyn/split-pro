@@ -77,6 +77,9 @@ export const groupRouter = createTRPCRouter({
                 },
                 take: 1,
               },
+              _count: {
+                select: { groupUsers: true },
+              },
             },
           },
         },
@@ -98,6 +101,7 @@ export const groupRouter = createTRPCRouter({
         return {
           ...g.group,
           balances,
+          memberCount: g.group._count.groupUsers,
         };
       });
 
