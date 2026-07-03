@@ -13,7 +13,10 @@ export const AccountButton: React.FC<React.PropsWithChildren<ButtonProps> & { hr
   <WithLink href={href}>
     <Button
       variant="ghost"
-      className={cn(className, 'text-md hover:text-foreground/80 w-full justify-between px-0')}
+      className={cn(
+        className,
+        'text-md hover:text-foreground/80 w-full justify-between px-0 py-3.5',
+      )}
       {...buttonProps}
     >
       <div className="flex items-center gap-4">{children}</div>

@@ -103,7 +103,7 @@ const AccountPage: NextPageWithUser<{
       <MainLayout title={t('account.title')} header={header}>
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <EntityAvatar entity={userQuery.data} size={50} />
+            <EntityAvatar entity={userQuery.data} size={64} />
             <div>
               <div className="text-xl font-semibold">{userQuery.data?.name}</div>
               <div className="text-sm text-gray-500">{userQuery.data?.email}</div>
@@ -119,7 +119,7 @@ const AccountPage: NextPageWithUser<{
             />
           )}
         </div>
-        <div className="mt-8 flex flex-col gap-4">
+        <div className="divide-foreground/8 mt-8 flex flex-col divide-y">
           <LanguagePicker>
             <AccountButton>
               <Languages className="size-5 text-green-500" />
