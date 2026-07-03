@@ -23,7 +23,7 @@ export const BalanceEntry: React.FC<{
   }, []);
 
   return (
-    <Link className="flex items-center justify-between" href={`${currentRoute}/${id}`}>
+    <Link className="flex items-center justify-between py-3.5" href={`${currentRoute}/${id}`}>
       <div className="flex min-w-0 items-center gap-3">
         <EntityAvatar entity={entity} size={35} />
         <div className="text-foreground truncate">{displayName(entity)}</div>

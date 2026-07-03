@@ -72,7 +72,7 @@ const BalancePage: NextPageWithUser = ({ user }) => {
         loading={cumulatedQuery.isPending}
       >
         <NotificationModal />
-        <div className="mx-4 flex items-stretch justify-between gap-4">
+        <div className="divide-foreground/8 mx-4 flex items-stretch divide-x">
           {selectedCurrency && isCurrencyCode(selectedCurrency) ? (
             <CumulatedBalanceDisplay
               prefix={`${t('ui.total_balance')}`}
@@ -99,7 +99,7 @@ const BalancePage: NextPageWithUser = ({ user }) => {
           )}
         </div>
 
-        <div className="mt-5 flex flex-col gap-8 pb-36">
+        <div className="divide-foreground/8 mt-5 flex flex-col divide-y pb-36">
           {balanceQuery.data?.balances.map((balance) => (
             <BalanceEntry
               key={balance.friend.id}
@@ -143,17 +143,13 @@ const CumulatedBalanceDisplay: React.FC<{
   }
 
   return (
-    <div className={cn('w-1/2 rounded-2xl border px-4 py-2', className)}>
-      <div className="mt-2 px-1">
-        <div className="flex items-center justify-center gap-2 text-center">
-          <p className="text-sm">{prefix}</p>
-        </div>
-      </div>
-      <div className="mt-4 mb-2 flex flex-wrap justify-center gap-1">
+    <div className={cn('flex-1 px-4', className)}>
+      <p className="text-foreground/45 text-xs tracking-[.06em] uppercase">{prefix}</p>
+      <div className="mt-2 flex flex-wrap gap-1">
         <ConvertibleBalance
           balances={cumulatedBalances}
           showMultiOption
-          className="flex-wrap"
+          className="flex-wrap text-[30px] font-bold"
           overrideCurrencies={currencies}
           forceShowButton={currencies.length > 1}
         />
