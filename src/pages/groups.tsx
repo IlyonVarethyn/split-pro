@@ -86,7 +86,7 @@ const BalancePage: NextPageWithUser = () => {
                       {t('group_details.group_info.archived')} ({archivedGroupQuery.data.length})
                     </AccordionTrigger>
                     <AccordionContent>
-                      <div className="mt-7 flex flex-col gap-8">
+                      <div className="divide-foreground/8 mt-7 flex flex-col divide-y">
                         {archivedGroupQuery.data.map((g) => (
                           <BalanceEntry key={g.id} id={g.id} entity={g} />
                         ))}
