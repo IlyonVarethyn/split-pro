@@ -72,7 +72,7 @@ const BalancePage: NextPageWithUser = ({ user }) => {
         loading={cumulatedQuery.isPending}
       >
         <NotificationModal />
-        <div className="divide-foreground/8 mx-4 flex items-stretch divide-x">
+        <div className="divide-foreground/8 mx-4 flex items-stretch justify-center divide-x">
           {selectedCurrency && isCurrencyCode(selectedCurrency) ? (
             <CumulatedBalanceDisplay
               prefix={`${t('ui.total_balance')}`}
@@ -143,7 +143,7 @@ const CumulatedBalanceDisplay: React.FC<{
   }
 
   return (
-    <div className={cn('flex-1 px-4', className)}>
+    <div className={cn('w-1/2 px-4', className)}>
       <p className="text-foreground/45 text-xs tracking-[.06em] uppercase">{prefix}</p>
       <div className="mt-2 flex flex-wrap gap-1">
         <ConvertibleBalance
