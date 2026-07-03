@@ -22,6 +22,7 @@ import { toast } from 'sonner';
 import { BalanceList } from '~/components/Expense/BalanceList';
 import { ExpenseList } from '~/components/Expense/ExpenseList';
 import AddMembers from '~/components/group/AddMembers';
+import { AvatarStack } from '~/components/group/AvatarStack';
 import GroupMyBalance from '~/components/group/GroupMyBalance';
 import NoMembers from '~/components/group/NoMembers';
 import MainLayout from '~/components/Layout/MainLayout';
@@ -499,7 +500,10 @@ const BalancePage: NextPageWithUser<{
           </div>
         ) : (
           <div className="transition-discrete starting:opacity-0">
-            <div className="mb-4">
+            {groupDetailQuery.data ? (
+              <AvatarStack members={groupDetailQuery.data.groupUsers.map((gu) => gu.user)} />
+            ) : null}
+            <div className="mt-4 mb-4">
               {isArchived && (
                 <div className="mb-4 flex justify-center gap-2 overflow-y-auto pb-4">
                   <p>
