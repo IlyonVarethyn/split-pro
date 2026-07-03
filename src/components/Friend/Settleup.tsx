@@ -141,12 +141,12 @@ export const SettleUp: React.FC<
       shouldCloseOnAction
     >
       {!balanceToSettle ? (
-        <div>
+        <div className="divide-foreground/8 divide-y">
           {balances?.map((b) => (
             <div
               key={`${b.friendId}-${b.currency}-${b.groupId ?? 'null'}`}
               onClick={() => onSelectBalance(b)}
-              className="cursor-pointer px-4 py-2"
+              className="cursor-pointer py-3.5"
             >
               <FriendBalance user={friend} balance={b} groupName={b.groupName} />
             </div>
