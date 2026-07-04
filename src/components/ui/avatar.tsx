@@ -1,4 +1,3 @@
-import BoringAvatar from 'boring-avatars';
 import { Avatar as AvatarPrimitive } from 'radix-ui';
 import * as React from 'react';
 
@@ -44,7 +43,15 @@ const AvatarFallback = React.forwardRef<
 ));
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName;
 
-const DEFAULT_AVATAR_COLORS = ['#80C7B7', '#D9C27E', '#F4B088', '#FFA5AA', '#9D9DD3'];
+export const FLAT_AVATAR_COLORS = ['#f2b28c', '#8ec5d6', '#c9a8e0', '#e0c88e', '#a8d6b8'];
+
+export const flatAvatarColor = (name: string): string => {
+  let hash = 0;
+  for (const ch of name) {
+    hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  }
+  return FLAT_AVATAR_COLORS[hash % FLAT_AVATAR_COLORS.length]!;
+};
 
 const EntityAvatar: React.FC<{
   entity?: { name?: string | null; image?: string | null; email?: string | null } | null;
@@ -58,21 +65,22 @@ const EntityAvatar: React.FC<{
     [size],
   );
 
+  const name = entity?.name ?? entity?.email ?? '';
+  const initial = name.trim().charAt(0).toUpperCase() || '?';
+
   return (
     <Avatar style={avatarSize}>
       <AvatarImage
         src={entity?.image ? toImageSrc(entity.image) : undefined}
         alt={entity?.name ?? entity?.email ?? ''}
       />
-      <AvatarFallback>
-        <BoringAvatar
-          size={size}
-          name={entity?.name ?? entity?.email ?? ''}
-          variant="beam"
-          // colors={['#ADDFD3', '#EAE3D0', '#DBC4B6', '#FFA5AA', '#EFD5C4']}
-          // colors={['#565175', '#538A95', '#67B79E', '#FFB727', '#E4491C']}
-          colors={DEFAULT_AVATAR_COLORS}
-        />
+      <AvatarFallback style={{ backgroundColor: flatAvatarColor(name) }}>
+        <span
+          className="font-semibold"
+          style={{ color: '#0a0c0d', fontSize: Math.round((size ?? 40) * 0.4) }}
+        >
+          {initial}
+        </span>
       </AvatarFallback>
     </Avatar>
   );
