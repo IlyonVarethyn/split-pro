@@ -303,29 +303,28 @@ export const AppDrawer: React.FC<AppDrawerProps> = (props) => {
                     )}
                   </Button>
                 ) : null}
-                {actionTitle ? (
-                  !shouldCloseOnAction ? (
-                    <Button
-                      variant="ghost"
-                      className="text-primary px-0 py-2 text-[13.5px] font-semibold"
-                      onClick={actionOnClick}
-                      disabled={actionDisabled}
-                    >
-                      {actionTitle}
-                    </Button>
-                  ) : (
-                    <DrawerClose
-                      onClick={actionOnClick}
-                      className="text-primary py-2 text-[13.5px] font-semibold disabled:opacity-50"
-                      disabled={actionDisabled}
-                    >
-                      {actionTitle}
-                    </DrawerClose>
-                  )
-                ) : null}
               </div>
             </div>
             <div>{children}</div>
+            {actionTitle ? (
+              !shouldCloseOnAction ? (
+                <Button
+                  className="bg-primary text-primary-foreground mt-6 w-full rounded-[14px] py-3.5 text-[15px] font-bold active:scale-[.98] disabled:opacity-40"
+                  onClick={actionOnClick}
+                  disabled={actionDisabled}
+                >
+                  {actionTitle}
+                </Button>
+              ) : (
+                <DrawerClose
+                  onClick={actionOnClick}
+                  className="bg-primary text-primary-foreground mt-6 w-full rounded-[14px] py-3.5 text-[15px] font-bold active:scale-[.98] disabled:opacity-40"
+                  disabled={actionDisabled}
+                >
+                  {actionTitle}
+                </DrawerClose>
+              )
+            ) : null}
           </div>
         </DrawerContent>
       </Drawer>
