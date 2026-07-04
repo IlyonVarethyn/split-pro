@@ -20,7 +20,7 @@ import { CurrencyPicker } from './CurrencyPicker';
 import { DateSelector } from './DateSelector';
 import { RecurrenceInput } from './RecurrenceInput';
 import { SelectUserOrGroup } from './SelectUserOrGroup';
-import { PayerSelectionForm, SplitExpenseForm } from './SplitTypeSection';
+import { PayerSelectionForm, SplitTypeInline } from './SplitTypeSection';
 import { UploadFile } from './UploadFile';
 import { UserInput } from './UserInput';
 import { CurrencyInput } from '../ui/currency-input';
@@ -50,13 +50,11 @@ export const AddOrEditExpensePage: React.FC<{
   const splitType = useAddExpenseStore((s) => s.splitType);
   const fileKey = useAddExpenseStore((s) => s.fileKey);
   const currentUser = useAddExpenseStore((s) => s.currentUser);
-  const splitShares = useAddExpenseStore((s) => s.splitShares);
   const transactionId = useAddExpenseStore((s) => s.transactionId);
   const cronExpression = useAddExpenseStore((s) => s.cronExpression);
   const multipleTransactions = useAddExpenseStore((s) => s.multipleTransactions);
 
-  const { t, displayName, generateSplitDescription, getCurrencyHelpersCached } =
-    useTranslationWithUtils();
+  const { t, displayName, getCurrencyHelpersCached } = useTranslationWithUtils();
 
   const {
     setCurrency,
@@ -283,7 +281,7 @@ export const AddOrEditExpensePage: React.FC<{
   }, [router]);
 
   return (
-    <div className="flex flex-col gap-5 pb-36">
+    <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between">
         <Button
           variant="ghost"
@@ -295,24 +293,32 @@ export const AddOrEditExpensePage: React.FC<{
         <div className="text-[26px] font-bold tracking-[-0.4px]">
           {expenseId ? t('actions.edit_expense') : t('actions.add_expense')}
         </div>
-        <Button
-          variant="ghost"
-          className="text-primary px-0 text-[13.5px] font-semibold"
-          disabled={
-            addExpenseMutation.isPending || !amount || '' === description || isFileUploading
-          }
-          onClick={addExpense}
-        >
-          {t('actions.save')}
-        </Button>{' '}
+        {expenseId ? (
+          <div className="size-[38px]" />
+        ) : (
+          <RecurrenceInput>
+            <Button
+              variant="ghost"
+              className={cn(
+                'size-[38px] rounded-full px-0',
+                cronExpression ? 'bg-primary/14 text-primary' : 'bg-foreground/6',
+              )}
+            >
+              <RefreshCcwDot className="size-[17px]" />
+              <span className="sr-only">Toggle recurring expense options</span>
+            </Button>
+          </RecurrenceInput>
+        )}
       </div>
       <UserInput isEditing={Boolean(expenseId)} />
       {showFriends || (1 === participants.length && !group) ? (
         <SelectUserOrGroup enableSendingInvites={enableSendingInvites} />
       ) : (
         <>
-          <div className="mt-4 grid gap-5 sm:mt-8">
-            <CategoryPicker category={category} onCategoryPick={setCategory} />
+          <div className="flex flex-col gap-1.5">
+            <div className="text-foreground/40 text-[11.5px] font-semibold tracking-[.06em] uppercase">
+              {t('expense_details.add_expense_details.description_label')}
+            </div>
             <Input
               placeholder={t('expense_details.add_expense_details.description_placeholder')}
               value={description}
@@ -321,95 +327,62 @@ export const AddOrEditExpensePage: React.FC<{
               autoFocus
             />
           </div>
-          <div className="flex items-end gap-2">
-            <CurrencyPicker currentCurrency={currency} onCurrencyPick={onCurrencyPick} />
-            <CurrencyInput
-              className="border-0 bg-transparent px-0 text-[38px] font-bold tracking-[-0.5px] tabular-nums shadow-none placeholder:text-[24px] focus-visible:ring-0"
-              placeholder={t('expense_details.add_expense_details.amount_placeholder')}
-              currency={currency}
-              strValue={amtStr}
-              allowNegative
-              hideSymbol
-              onValueChange={onUpdateAmount}
-              rightIcon={currencyConversionComponent}
-            />
+          <div className="flex items-end justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <div className="text-foreground/40 mb-1.5 text-[11.5px] font-semibold tracking-[.06em] uppercase">
+                {t('expense_details.add_expense_details.amount_label')}
+              </div>
+              <CurrencyInput
+                className="border-0 bg-transparent px-0 text-[38px] font-bold tracking-[-0.5px] tabular-nums shadow-none placeholder:text-[24px] focus-visible:ring-0"
+                placeholder={t('expense_details.add_expense_details.amount_placeholder')}
+                currency={currency}
+                strValue={amtStr}
+                allowNegative
+                hideSymbol
+                onValueChange={onUpdateAmount}
+              />
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              {currencyConversionComponent}
+              <CurrencyPicker currentCurrency={currency} onCurrencyPick={onCurrencyPick} />
+            </div>
           </div>
-          <div className="h-[180px]">
-            {amount && '' !== description ? (
-              <>
-                <div className="text-foreground/45 flex flex-wrap items-center justify-center gap-2 text-[12.5px] sm:mt-4">
-                  <p>{t(`ui.expense.${isNegative ? 'received_by' : 'paid_by'}`)}</p>
-                  <PayerSelectionForm>
-                    <Button
-                      variant="ghost"
-                      className="bg-primary/14 text-primary h-auto max-w-full min-w-0 justify-start rounded-full px-3.5 py-2 text-[12.5px] font-semibold sm:max-w-none"
-                    >
-                      <span className="max-w-full truncate">
-                        {displayName(paidBy, currentUser?.id, 'dativus')}
-                      </span>
-                    </Button>
-                  </PayerSelectionForm>
-                  <p>{t('ui.and')} </p>
-                  <SplitExpenseForm>
-                    <Button
-                      variant="ghost"
-                      className="bg-foreground/7 text-foreground/70 h-auto rounded-full px-3.5 py-2 text-[12.5px] font-semibold"
-                    >
-                      {generateSplitDescription(
-                        splitType,
-                        participants,
-                        splitShares,
-                        paidBy,
-                        currentUser,
-                      )}
-                    </Button>
-                  </SplitExpenseForm>
-                </div>
 
-                <div className="mt-4 flex items-center justify-between gap-3 sm:mt-8">
-                  <DateSelector
-                    mode="single"
-                    required
-                    selected={expenseDate}
-                    onSelect={setExpenseDate}
-                  />
-                  <div className="flex items-center gap-4">
-                    <UploadFile />
-                    <Button
-                      className="bg-primary text-primary-foreground min-w-[120px] rounded-[14px] py-[13px] text-[15px] font-bold active:scale-[.98]"
-                      size="sm"
-                      loading={addExpenseMutation.isPending || isFileUploading}
-                      disabled={
-                        addExpenseMutation.isPending ||
-                        !amount ||
-                        '' === description ||
-                        isFileUploading ||
-                        !isExpenseSettled
-                      }
-                      onClick={addExpense}
-                    >
-                      {t('actions.save')}
-                    </Button>
-                  </div>
-                </div>
-              </>
-            ) : null}
+          <div className="flex flex-wrap gap-2">
+            <PayerSelectionForm>
+              <Button
+                variant="ghost"
+                className="bg-primary/14 text-primary h-auto max-w-full min-w-0 justify-start rounded-full px-3.5 py-2 text-[12.5px] font-semibold"
+              >
+                <span className="max-w-full truncate">
+                  {t(`ui.expense.${isNegative ? 'received_by' : 'paid_by'}`)}{' '}
+                  {displayName(paidBy, currentUser?.id, 'dativus')}
+                </span>
+              </Button>
+            </PayerSelectionForm>
+            <CategoryPicker category={category} onCategoryPick={setCategory} />
+            <DateSelector mode="single" required selected={expenseDate} onSelect={setExpenseDate} />
+            <UploadFile />
           </div>
+
+          <SplitTypeInline />
+
+          <Button
+            className="bg-primary text-primary-foreground w-full rounded-[14px] py-[15px] text-[15.5px] font-bold active:scale-[.98] disabled:opacity-40"
+            loading={addExpenseMutation.isPending || isFileUploading}
+            disabled={
+              addExpenseMutation.isPending ||
+              !amount ||
+              '' === description ||
+              isFileUploading ||
+              !isExpenseSettled
+            }
+            onClick={addExpense}
+          >
+            {t('actions.save')}
+          </Button>
+
           <div className="flex items-center justify-evenly px-4 lg:px-0">
-            {!expenseId && (
-              <RecurrenceInput>
-                <Button variant="ghost" size="sm">
-                  <RefreshCcwDot
-                    className={cn(
-                      cronExpression && 'text-primary',
-                      (!amtStr || !description) && 'invisible',
-                      'size-6',
-                    )}
-                  />
-                  <span className="sr-only">Toggle recurring expense options</span>
-                </Button>
-              </RecurrenceInput>
-            )}
             <SponsorUs />
             <div className="flex gap-2">
               <AddBankTransactions bankConnectionEnabled={bankConnectionEnabled}>

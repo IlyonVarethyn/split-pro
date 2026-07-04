@@ -189,7 +189,9 @@
     "add_expense": "Aggiungi spesa",
     "add_expense_details": {
       "add_new_expense": "Aggiungi nuova spesa",
+      "amount_label": "Importo",
       "amount_placeholder": "Inserisci importo",
+      "description_label": "Descrizione",
       "description_placeholder": "Inserisci descrizione",
       "pick_a_date": "Scegli una data",
       "select_user_or_group": {
@@ -200,8 +202,10 @@
         "warning": "Attenzione: non usare \"Invia invito\" se l'email non è valida. Usa invece \"Aggiungi a Split Pro\". Il tuo account verrà bloccato se questa funzione viene utilizzata in modo improprio"
       },
       "split_type_section": {
+        "how_to_split": "Come dividere",
         "split_equally": "diviso equamente",
         "split_unequally": "diviso non equamente",
+        "total_split": "Totale ripartito",
         "types": {
           "adjustment": {
             "remaining_to_split_equally": "Rimanente da dividere equamente",
@@ -230,13 +234,15 @@
       "upload_file": {
         "messages": {
           "upload_success": "File caricato con successo"
-        }
+        },
+        "receipt_label": "Ricevuta"
       },
       "user_input": {
         "add_more_friends": "Cerca amici, gruppi o aggiungi email",
         "cannot_change_group": "Impossibile cambiare gruppo durante la modifica",
         "remove_group": "Premi elimina per rimuovere il gruppo",
-        "search_friends": "Cerca amici, gruppi o aggiungi email"
+        "search_friends": "Cerca amici, gruppi o aggiungi email",
+        "with_label": "Con"
       }
     },
     "already_added": "Già aggiunto",

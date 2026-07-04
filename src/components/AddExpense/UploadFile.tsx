@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'next-i18next';
 
+import { cn } from '~/lib/utils';
 import { useAddExpenseStore } from '~/store/addStore';
 import { prepareImageForUpload, uploadImage, validateUploadSize } from '~/utils/imageUpload';
 
@@ -58,13 +59,22 @@ export const UploadFile: React.FC = () => {
     [setFileUploading, setFileKey, maxUploadFileSizeMB, t],
   );
 
+  const isAttached = Boolean(file || fileKey);
+
   return (
-    <Label htmlFor="picture" className="cursor-pointer">
-      {file || fileKey ? (
-        <ImageUploaded className="text-primary h-6 w-6" />
-      ) : (
-        <ImagePlus className="h-6 w-6 text-gray-300" />
+    <Label
+      htmlFor="picture"
+      className={cn(
+        'flex cursor-pointer items-center gap-1.5 rounded-full px-3.5 py-2 text-[12.5px] font-semibold',
+        isAttached ? 'bg-primary/14 text-primary' : 'bg-foreground/7 text-foreground/70',
       )}
+    >
+      {isAttached ? (
+        <ImageUploaded className="size-3.5" />
+      ) : (
+        <ImagePlus className="text-foreground/45 size-3.5" />
+      )}
+      {t('expense_details.add_expense_details.upload_file.receipt_label')}
       <Input
         onChange={handleFileChange}
         id="picture"

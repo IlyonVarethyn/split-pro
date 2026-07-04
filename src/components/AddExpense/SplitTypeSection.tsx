@@ -75,29 +75,10 @@ const PayerRow = ({ p, isPaying }: { p: Participant; isPaying: boolean }) => {
   );
 };
 
-export const SplitExpenseForm: React.FC<
-  PropsWithChildren<{
-    allowedSplitTypes?: readonly SplitType[];
-    onSave?: () => void;
-    onOpenChange?: (open: boolean) => void;
-    onTriggerClick?: () => void;
-  }>
-> = ({ children, allowedSplitTypes, onSave, onOpenChange, onTriggerClick }) => {
+const useSplitTabsController = (allowedSplitTypes?: readonly SplitType[]) => {
   const { t } = useTranslation();
   const splitType = useAddExpenseStore((s) => s.splitType);
   const { setSplitType } = useAddExpenseStore((s) => s.actions);
-  const canSplitScreenClosed = useAddExpenseStore((s) => s.canSplitScreenClosed);
-  const splitScreenOpen = useAddExpenseStore((s) => s.splitScreenOpen);
-
-  const { setSplitScreenOpen } = useAddExpenseStore((s) => s.actions);
-
-  const handleOpenChange = useCallback(
-    (open: boolean) => {
-      setSplitScreenOpen(open);
-      onOpenChange?.(open);
-    },
-    [onOpenChange, setSplitScreenOpen],
-  );
 
   const onTabChange = useCallback(
     (value: string) => {
@@ -125,6 +106,57 @@ export const SplitExpenseForm: React.FC<
     }
   }, [activeSplitType, setSplitType, splitType]);
 
+  return { splitProps, activeSplitType, onTabChange };
+};
+
+const SplitTypeTabs: React.FC<{
+  splitProps: SplitSectionProps[];
+  activeSplitType: SplitType;
+  onTabChange: (value: string) => void;
+}> = ({ splitProps, activeSplitType, onTabChange }) => (
+  <Tabs value={activeSplitType} className="w-full" onValueChange={onTabChange}>
+    <TabsList className="bg-foreground/5 h-auto w-full justify-between gap-0.5 rounded-[12px] p-1">
+      {splitProps.map(({ splitType, iconComponent: Icon }) => (
+        <TabsTrigger
+          key={splitType}
+          value={splitType}
+          className="text-foreground/45 data-[state=active]:bg-foreground/10 data-[state=active]:text-foreground flex-1 rounded-[9px] py-2 text-[12px] font-semibold transition-all duration-[220ms]"
+        >
+          <Icon className="h-5 w-5" />
+        </TabsTrigger>
+      ))}
+    </TabsList>
+    {splitProps.map((props) => (
+      <TabsContent key={props.splitType} value={props.splitType}>
+        <SplitSection {...props} />
+      </TabsContent>
+    ))}
+  </Tabs>
+);
+
+export const SplitExpenseForm: React.FC<
+  PropsWithChildren<{
+    allowedSplitTypes?: readonly SplitType[];
+    onSave?: () => void;
+    onOpenChange?: (open: boolean) => void;
+    onTriggerClick?: () => void;
+  }>
+> = ({ children, allowedSplitTypes, onSave, onOpenChange, onTriggerClick }) => {
+  const { t } = useTranslation();
+  const canSplitScreenClosed = useAddExpenseStore((s) => s.canSplitScreenClosed);
+  const splitScreenOpen = useAddExpenseStore((s) => s.splitScreenOpen);
+
+  const { setSplitScreenOpen } = useAddExpenseStore((s) => s.actions);
+  const { splitProps, activeSplitType, onTabChange } = useSplitTabsController(allowedSplitTypes);
+
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      setSplitScreenOpen(open);
+      onOpenChange?.(open);
+    },
+    [onOpenChange, setSplitScreenOpen],
+  );
+
   return (
     <AppDrawer
       trigger={children}
@@ -141,25 +173,39 @@ export const SplitExpenseForm: React.FC<
       open={splitScreenOpen}
       onOpenChange={handleOpenChange}
     >
-      <Tabs value={activeSplitType} className="mx-auto mt-5 w-full" onValueChange={onTabChange}>
-        <TabsList className="bg-foreground/5 h-auto w-full justify-between rounded-[12px] p-1">
-          {splitProps.map(({ splitType, iconComponent: Icon }) => (
-            <TabsTrigger
-              key={splitType}
-              value={splitType}
-              className="text-foreground/45 data-[state=active]:bg-foreground/10 data-[state=active]:text-foreground flex-1 rounded-[9px] py-2 text-[12px] font-semibold transition-all duration-[220ms]"
-            >
-              <Icon className="h-5 w-5" />
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {splitProps.map((props) => (
-          <TabsContent key={props.splitType} value={props.splitType}>
-            <SplitSection {...props} />
-          </TabsContent>
-        ))}
-      </Tabs>
+      <div className="mx-auto mt-5 w-full">
+        <SplitTypeTabs
+          splitProps={splitProps}
+          activeSplitType={activeSplitType}
+          onTabChange={onTabChange}
+        />
+      </div>
     </AppDrawer>
+  );
+};
+
+/**
+ * Inline (non-drawer) rendering of the split-type segmented control, used directly on the
+ * Add Expense main screen per the redesign brief (segmented control + participant rows +
+ * "Totale ripartito" live on the page, not behind a trigger).
+ */
+export const SplitTypeInline: React.FC<{ allowedSplitTypes?: readonly SplitType[] }> = ({
+  allowedSplitTypes,
+}) => {
+  const { t } = useTranslation();
+  const { splitProps, activeSplitType, onTabChange } = useSplitTabsController(allowedSplitTypes);
+
+  return (
+    <div className="flex flex-col gap-2.5">
+      <div className="text-foreground/40 text-[11.5px] font-semibold tracking-[.06em] uppercase">
+        {t('expense_details.add_expense_details.split_type_section.how_to_split')}
+      </div>
+      <SplitTypeTabs
+        splitProps={splitProps}
+        activeSplitType={activeSplitType}
+        onTabChange={onTabChange}
+      />
+    </div>
   );
 };
 
@@ -303,14 +349,6 @@ const SplitSection: React.FC<SplitSectionProps> = (props) => {
 
   return (
     <div className="mt-4 flex flex-col px-1">
-      <p
-        className={cn(
-          canSplitScreenClosed ? 'text-positive' : 'text-negative',
-          'wrap-break-words mb-3 min-h-6 flex-1 text-center text-[13px] font-medium tabular-nums',
-        )}
-      >
-        {fmtSummartyText(amount, totalShares, toUIString)}
-      </p>
       {isBoolean && (
         <Button
           variant="outline"
@@ -332,6 +370,19 @@ const SplitSection: React.FC<SplitSectionProps> = (props) => {
           {...props}
         />
       ))}
+      <div className="flex items-center justify-between pt-3">
+        <p className="text-foreground/45 text-[13px]">
+          {t('expense_details.add_expense_details.split_type_section.total_split')}
+        </p>
+        <p
+          className={cn(
+            canSplitScreenClosed ? 'text-positive' : 'text-negative',
+            'wrap-break-words text-[14px] font-semibold tabular-nums',
+          )}
+        >
+          {fmtSummartyText(amount, totalShares, toUIString)}
+        </p>
+      </div>
     </div>
   );
 };
