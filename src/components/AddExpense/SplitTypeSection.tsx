@@ -45,7 +45,7 @@ export const PayerSelectionForm: React.FC<PropsWithChildren> = ({ children }) =>
       className="h-[70vh]"
       shouldCloseOnAction
     >
-      <div className="flex flex-col gap-6 overflow-auto">
+      <div className="flex flex-col overflow-auto">
         {participants.map((participant) => (
           <PayerRow key={participant.id} p={participant} isPaying={participant.id === paidBy?.id} />
         ))}
@@ -62,12 +62,15 @@ const PayerRow = ({ p, isPaying }: { p: Participant; isPaying: boolean }) => {
   const onClick = useCallback(() => setPaidBy(p), [p, setPaidBy]);
 
   return (
-    <AppDrawerClose className="flex items-center justify-between px-2" onClick={onClick}>
-      <div className="flex min-w-0 items-center gap-1">
-        <EntityAvatar entity={p} size={30} />
-        <p className="ml-4 truncate">{displayName(p, currentUser?.id)}</p>
+    <AppDrawerClose
+      className="border-foreground/6 flex items-center justify-between border-b px-1 py-3"
+      onClick={onClick}
+    >
+      <div className="flex min-w-0 items-center gap-3">
+        <EntityAvatar entity={p} size={38} />
+        <p className="truncate text-[15px] font-medium">{displayName(p, currentUser?.id)}</p>
       </div>
-      {isPaying ? <Check className="h-6 w-6 text-cyan-500" /> : null}
+      {isPaying ? <Check className="text-primary h-5 w-5" /> : null}
     </AppDrawerClose>
   );
 };
@@ -139,9 +142,13 @@ export const SplitExpenseForm: React.FC<
       onOpenChange={handleOpenChange}
     >
       <Tabs value={activeSplitType} className="mx-auto mt-5 w-full" onValueChange={onTabChange}>
-        <TabsList className="w-full justify-between">
+        <TabsList className="bg-foreground/5 h-auto w-full justify-between rounded-[12px] p-1">
           {splitProps.map(({ splitType, iconComponent: Icon }) => (
-            <TabsTrigger key={splitType} value={splitType} className="text-xs">
+            <TabsTrigger
+              key={splitType}
+              value={splitType}
+              className="text-foreground/45 data-[state=active]:bg-foreground/10 data-[state=active]:text-foreground flex-1 rounded-[9px] py-2 text-[12px] font-semibold transition-all duration-[220ms]"
+            >
               <Icon className="h-5 w-5" />
             </TabsTrigger>
           ))}
@@ -295,11 +302,11 @@ const SplitSection: React.FC<SplitSectionProps> = (props) => {
   );
 
   return (
-    <div className="mt-4 flex flex-col gap-6 px-2">
+    <div className="mt-4 flex flex-col px-1">
       <p
         className={cn(
-          canSplitScreenClosed ? 'text-gray-300' : 'text-red-500',
-          'wrap-break-words min-h-6 flex-1 text-center',
+          canSplitScreenClosed ? 'text-positive' : 'text-negative',
+          'wrap-break-words mb-3 min-h-6 flex-1 text-center text-[13px] font-medium tabular-nums',
         )}
       >
         {fmtSummartyText(amount, totalShares, toUIString)}
@@ -307,7 +314,7 @@ const SplitSection: React.FC<SplitSectionProps> = (props) => {
       {isBoolean && (
         <Button
           variant="outline"
-          className="mx-auto h-8 w-fit gap-2 p-2 text-gray-500"
+          className="bg-foreground/7 text-foreground/60 mx-auto mb-2 h-8 w-fit gap-2 rounded-full border-none px-3 py-2"
           onClick={selectAll}
         >
           {allSelected ? <X className="h-4 w-4" /> : <Check className="h-4 w-4" />}
@@ -383,20 +390,23 @@ const ParticipantRow = ({
   return (
     <div
       key={p.id}
-      className={clsx('flex items-center justify-between', isBoolean && 'cursor-pointer')}
+      className={clsx(
+        'border-foreground/7 flex items-center justify-between border-b py-3',
+        isBoolean && 'cursor-pointer',
+      )}
       onClick={onClick}
     >
       <UserAndAmount user={p} currency={currency} />
       {isBoolean ? (
         0n !== share ? (
-          <Check className="h-6 w-6 text-cyan-500" />
+          <Check className="text-primary h-5 w-5" />
         ) : null
       ) : isCurrency ? (
         <div className="flex w-1/2 items-center gap-1">
           <CurrencyInput
             strValue={shareStr}
             currency={currency}
-            className="ml-2 text-right"
+            className="ml-2 border-0 bg-transparent text-right text-[15px] font-semibold tabular-nums shadow-none focus-visible:ring-0"
             onValueChange={onCurrencyInputValueChange}
           />
         </div>
@@ -407,7 +417,7 @@ const ParticipantRow = ({
             type="number"
             defaultValue={share ? fmtShareText(share) : ''}
             inputMode="decimal"
-            className="ml-2 w-20 text-lg"
+            className="bg-foreground/5 ml-2 w-20 rounded-[10px] text-right text-[15px] font-semibold tabular-nums"
             placeholder="0"
             min={0}
             step={step ?? 0.01}
@@ -434,14 +444,14 @@ export const UserAndAmount: React.FC<{ user: Participant; currency: CurrencyCode
   const shareAmount = paidBy?.id === user.id ? (user.amount ?? 0n) - amount : user.amount;
 
   return (
-    <div className="flex h-11 min-w-0 flex-1 items-center gap-2">
-      <EntityAvatar entity={user} size={30} />
+    <div className="flex min-w-0 flex-1 items-center gap-2.5">
+      <EntityAvatar entity={user} size={34} />
       <div className="flex min-w-0 flex-col">
-        <p className="truncate">{displayName(user, currentUser?.id)}</p>
+        <p className="truncate text-[14.5px] font-medium">{displayName(user, currentUser?.id)}</p>
         <p
           className={cn(
             canSplitScreenClosed || 'hidden',
-            'max-w-18 truncate text-sm text-gray-400',
+            'text-foreground/40 max-w-24 truncate text-[12px] tabular-nums',
           )}
         >
           {paidBy && 0n < (shareAmount ?? 0n) ? '-' : ''} {toUIString(shareAmount)}

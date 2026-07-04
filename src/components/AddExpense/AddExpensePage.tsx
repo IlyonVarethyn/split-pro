@@ -271,7 +271,7 @@ export const AddOrEditExpensePage: React.FC<{
         currency={previousCurrencyRef.current}
         editingTargetCurrency={currency}
       >
-        <Button size="icon" variant="secondary" className="size-8">
+        <Button size="icon" variant="secondary" className="bg-foreground/6 size-9 rounded-full">
           <CurrencyConversionIcon className="size-4" />
         </Button>
       </CurrencyConversion>
@@ -283,17 +283,21 @@ export const AddOrEditExpensePage: React.FC<{
   }, [router]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5 pb-36">
       <div className="flex items-center justify-between">
-        <Button variant="ghost" className="text-primary px-0" onClick={onBackButtonPress}>
+        <Button
+          variant="ghost"
+          className="text-foreground/50 px-0 text-[13.5px] font-semibold"
+          onClick={onBackButtonPress}
+        >
           {t('actions.cancel')}
         </Button>
-        <div className="text-center">
+        <div className="text-[26px] font-bold tracking-[-0.4px]">
           {expenseId ? t('actions.edit_expense') : t('actions.add_expense')}
         </div>
         <Button
           variant="ghost"
-          className="text-primary px-0"
+          className="text-primary px-0 text-[13.5px] font-semibold"
           disabled={
             addExpenseMutation.isPending || !amount || '' === description || isFileUploading
           }
@@ -307,19 +311,20 @@ export const AddOrEditExpensePage: React.FC<{
         <SelectUserOrGroup enableSendingInvites={enableSendingInvites} />
       ) : (
         <>
-          <div className="mt-4 flex gap-2 sm:mt-10">
+          <div className="mt-4 grid gap-5 sm:mt-8">
             <CategoryPicker category={category} onCategoryPick={setCategory} />
             <Input
               placeholder={t('expense_details.add_expense_details.description_placeholder')}
               value={description}
               onChange={handleDescriptionChange}
-              className="text-lg placeholder:text-sm"
+              className="border-foreground/18 focus-visible:border-primary rounded-none border-0 border-b-[1.5px] bg-transparent px-0 text-[18px] font-medium shadow-none placeholder:text-sm focus-visible:ring-0"
               autoFocus
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-end gap-2">
             <CurrencyPicker currentCurrency={currency} onCurrencyPick={onCurrencyPick} />
             <CurrencyInput
+              className="border-0 bg-transparent px-0 text-[38px] font-bold tracking-[-0.5px] tabular-nums shadow-none placeholder:text-[24px] focus-visible:ring-0"
               placeholder={t('expense_details.add_expense_details.amount_placeholder')}
               currency={currency}
               strValue={amtStr}
@@ -332,12 +337,12 @@ export const AddOrEditExpensePage: React.FC<{
           <div className="h-[180px]">
             {amount && '' !== description ? (
               <>
-                <div className="flex flex-col items-center justify-center text-sm text-gray-400 sm:mt-4 sm:flex-row">
+                <div className="text-foreground/45 flex flex-wrap items-center justify-center gap-2 text-[12.5px] sm:mt-4">
                   <p>{t(`ui.expense.${isNegative ? 'received_by' : 'paid_by'}`)}</p>
                   <PayerSelectionForm>
                     <Button
                       variant="ghost"
-                      className="text-primary h-8 max-w-full min-w-0 justify-start px-1.5 py-0 text-base sm:max-w-none"
+                      className="bg-primary/14 text-primary h-auto max-w-full min-w-0 justify-start rounded-full px-3.5 py-2 text-[12.5px] font-semibold sm:max-w-none"
                     >
                       <span className="max-w-full truncate">
                         {displayName(paidBy, currentUser?.id, 'dativus')}
@@ -346,7 +351,10 @@ export const AddOrEditExpensePage: React.FC<{
                   </PayerSelectionForm>
                   <p>{t('ui.and')} </p>
                   <SplitExpenseForm>
-                    <Button variant="ghost" className="text-primary h-8 px-1.5 py-0 text-base">
+                    <Button
+                      variant="ghost"
+                      className="bg-foreground/7 text-foreground/70 h-auto rounded-full px-3.5 py-2 text-[12.5px] font-semibold"
+                    >
                       {generateSplitDescription(
                         splitType,
                         participants,
@@ -358,7 +366,7 @@ export const AddOrEditExpensePage: React.FC<{
                   </SplitExpenseForm>
                 </div>
 
-                <div className="mt-4 flex items-start justify-between sm:mt-10">
+                <div className="mt-4 flex items-center justify-between gap-3 sm:mt-8">
                   <DateSelector
                     mode="single"
                     required
@@ -368,7 +376,7 @@ export const AddOrEditExpensePage: React.FC<{
                   <div className="flex items-center gap-4">
                     <UploadFile />
                     <Button
-                      className="min-w-[100px]"
+                      className="bg-primary text-primary-foreground min-w-[120px] rounded-[14px] py-[13px] text-[15px] font-bold active:scale-[.98]"
                       size="sm"
                       loading={addExpenseMutation.isPending || isFileUploading}
                       disabled={
@@ -407,16 +415,19 @@ export const AddOrEditExpensePage: React.FC<{
               <AddBankTransactions bankConnectionEnabled={bankConnectionEnabled}>
                 <Button
                   variant="ghost"
-                  className="hover:text-foreground/80 items-center justify-between px-2"
+                  className="bg-foreground/6 hover:text-foreground/80 size-[38px] rounded-full px-0"
                 >
                   <Landmark
-                    className={cn(transactionId ? 'text-primary' : 'text-white-500', 'h-6 w-6')}
+                    className={cn(transactionId ? 'text-primary' : 'text-foreground/45', 'h-5 w-5')}
                   />
                 </Button>
               </AddBankTransactions>
               <Button
                 variant="ghost"
-                className={cn('px-2', transactionId ? 'text-red-500' : 'invisible')}
+                className={cn(
+                  'bg-foreground/6 size-[38px] rounded-full px-0',
+                  transactionId ? 'text-negative' : 'invisible',
+                )}
                 disabled={!transactionId}
                 onClick={clearTransaction}
               >

@@ -72,9 +72,9 @@ export const UserInput: React.FC<{
   };
 
   return (
-    <div className="mt-4 flex gap-2 overflow-x-auto border-b pb-4 sm:flex-wrap">
+    <div className="bg-foreground/5 mt-2 flex gap-2 overflow-x-auto rounded-[14px] px-3.5 py-[11px] sm:flex-wrap">
       {group ? (
-        <div className="flex items-center gap-2 rounded-full bg-slate-800 p-0.5 pr-4">
+        <div className="bg-primary/14 text-primary flex items-center gap-2 rounded-full p-0.5 pr-4">
           <EntityAvatar entity={group} size={30} />
           <p className="text-xs">{group.name}</p>
         </div>
@@ -83,7 +83,7 @@ export const UserInput: React.FC<{
           p.id !== currentUser?.id ? (
             <div
               key={p.id}
-              className="flex max-w-40 items-center gap-2 rounded-full bg-slate-800 p-0.5 pr-4"
+              className="bg-foreground/7 text-foreground/70 flex max-w-40 items-center gap-2 rounded-full p-0.5 pr-4"
             >
               <EntityAvatar entity={p} size={30} />
               <p className="truncate text-xs">{p.name ?? p.email}</p>
@@ -106,7 +106,7 @@ export const UserInput: React.FC<{
         value={nameOrEmail}
         onChange={(e) => setNameOrEmail(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="min-w-[100px] grow bg-transparent outline-hidden placeholder:text-sm focus:ring-0"
+        className="placeholder:text-foreground/35 min-w-[100px] grow bg-transparent text-[14.5px] outline-hidden focus:ring-0"
         autoFocus
         disabled={isEditing && Boolean(group)}
       />
