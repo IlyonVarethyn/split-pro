@@ -163,6 +163,16 @@ export function CronBuilder({ onChange, value, className }: CronBuilderProps) {
             daysOfMonth: parseNumbers(dom),
           },
         };
+      } else if (min !== '*' && hour !== '*' && dom !== '*' && month !== '*' && dow === '*') {
+        return {
+          type: 'year',
+          values: {
+            minutes: parseNumbers(min),
+            hours: parseNumbers(hour),
+            daysOfMonth: parseNumbers(dom),
+            months: parseNumbers(month),
+          },
+        };
       } else {
         return { type: 'custom', values: { custom: cleanExpr } };
       }

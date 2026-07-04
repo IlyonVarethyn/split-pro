@@ -1,11 +1,12 @@
 import React, { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
+
 import { useTranslationWithUtils } from '~/hooks/useTranslationWithUtils';
+import { type CurrencyCode, isCurrencyCode } from '~/lib/currency';
+import { useAddExpenseStore } from '~/store/addStore';
 import { api } from '~/utils/api';
 import { MAX_RATE_PRECISION, currencyConversion, getRatePrecision } from '~/utils/numbers';
 
-import { toast } from 'sonner';
-import { type CurrencyCode, isCurrencyCode } from '~/lib/currency';
-import { useAddExpenseStore } from '~/store/addStore';
 import { CurrencyPicker } from '../AddExpense/CurrencyPicker';
 import { DateSelector } from '../AddExpense/DateSelector';
 import { Button } from '../ui/button';
@@ -115,14 +116,14 @@ export const CurrencyConversion: React.FC<{
   }, []);
 
   const onChangeTargetCurrency = useCallback(
-    (currency: CurrencyCode | null) => {
-      if (!currency) {
+    (nextCurrency: CurrencyCode | null) => {
+      if (!nextCurrency) {
         return;
       }
 
       setRate('');
-      setTargetCurrency(currency);
-      setCurrency(currency);
+      setTargetCurrency(nextCurrency);
+      setCurrency(nextCurrency);
     },
     [setCurrency],
   );
@@ -130,13 +131,13 @@ export const CurrencyConversion: React.FC<{
   const onChangeTargetAmount = useCallback(
     ({ bigIntValue }: { strValue?: string; bigIntValue?: bigint }) => {
       if (bigIntValue && isCurrencyCode(currency)) {
-        const amount = currencyConversion({
+        const convertedAmount = currencyConversion({
           amount: bigIntValue ?? 0n,
           rate: 1 / Number(rate),
           from: targetCurrency,
           to: currency,
         });
-        setAmountStr(toUIString(amount, false, true));
+        setAmountStr(toUIString(convertedAmount, false, true));
       }
     },
     [rate, toUIString, targetCurrency, currency],
@@ -187,41 +188,51 @@ export const CurrencyConversion: React.FC<{
         Number(targetAmountStr) <= 0
       }
     >
-      <div className="flex flex-col items-center gap-2 sm:mt-6">
-        <div className="w-full">
-          <div className="mx-auto grid w-full max-w-3xl grid-cols-1 place-items-center gap-x-4 gap-y-4 sm:grid-cols-3 sm:gap-y-16">
-            {/* From amount */}
-            <div className="flex w-full max-w-60 items-end gap-2 sm:col-span-2">
-              <div className="flex flex-col gap-2">
-                <Label className="capitalize">{t('ui.expense.from')}</Label>
-                <Button variant="outline" className="text-base" disabled>
-                  {currency}
-                </Button>
-              </div>
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 sm:mt-4">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="bg-foreground/5 rounded-[18px] px-[18px] py-4">
+            <Label className="text-muted-foreground text-[11px] font-semibold tracking-[.14em] uppercase">
+              {t('ui.expense.from')}
+            </Label>
+            <div className="mt-3 flex items-end gap-3">
+              <Button
+                variant="outline"
+                className="bg-background/70 h-10 rounded-full px-4 text-[13px] font-semibold"
+                disabled
+              >
+                {currency}
+              </Button>
               <CurrencyInput
                 aria-label="Amount"
                 currency={currency}
                 strValue={amountStr}
                 hideSymbol
                 onValueChange={onUpdateAmount}
+                className="border-foreground/15 h-11 rounded-none border-0 border-b bg-transparent px-0 text-right text-[21px] font-bold tabular-nums shadow-none focus-visible:ring-0"
               />
             </div>
+          </div>
 
-            <div className="flex w-full max-w-60 items-end gap-2 sm:col-span-2">
-              <div className="flex flex-col gap-2">
-                <Label className="capitalize">{t('ui.expense.to')}</Label>
-                {editingTargetCurrency ? (
-                  <Button variant="outline" className="text-base" disabled>
-                    {editingTargetCurrency}
-                  </Button>
-                ) : (
-                  <CurrencyPicker
-                    className="mx-auto"
-                    currentCurrency={targetCurrency}
-                    onCurrencyPick={onChangeTargetCurrency}
-                  />
-                )}
-              </div>
+          <div className="bg-foreground/5 rounded-[18px] px-[18px] py-4">
+            <Label className="text-muted-foreground text-[11px] font-semibold tracking-[.14em] uppercase">
+              {t('ui.expense.to')}
+            </Label>
+            <div className="mt-3 flex items-end gap-3">
+              {editingTargetCurrency ? (
+                <Button
+                  variant="outline"
+                  className="bg-background/70 h-10 rounded-full px-4 text-[13px] font-semibold"
+                  disabled
+                >
+                  {editingTargetCurrency}
+                </Button>
+              ) : (
+                <CurrencyPicker
+                  className="mx-0"
+                  currentCurrency={targetCurrency}
+                  onCurrencyPick={onChangeTargetCurrency}
+                />
+              )}
               <CurrencyInput
                 aria-label="Converted Amount"
                 currency={targetCurrency}
@@ -229,57 +240,60 @@ export const CurrencyConversion: React.FC<{
                 onValueChange={onChangeTargetAmount}
                 hideSymbol
                 disabled={getCurrencyRate.isPending || currency === targetCurrency}
+                className="border-foreground/15 h-11 rounded-none border-0 border-b bg-transparent px-0 text-right text-[21px] font-bold tabular-nums shadow-none focus-visible:ring-0"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-foreground/5 rounded-[18px] px-[18px] py-4">
+          <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+            <div className="flex flex-col gap-2">
+              <Label className="text-muted-foreground text-[11px] font-semibold tracking-[.14em] uppercase">
+                {t('currency_conversion.rate')}
+              </Label>
+              <Input
+                aria-label="Rate"
+                type="number"
+                step={`0.${'0'.repeat(MAX_RATE_PRECISION - 1)}1`}
+                min={0}
+                value={rate}
+                inputMode="numeric"
+                onChange={onChangeRate}
+                disabled={getCurrencyRate.isPending || currency === targetCurrency}
+                className="border-foreground/15 h-11 rounded-none border-0 border-b bg-transparent px-0 text-[20px] font-semibold tabular-nums shadow-none focus-visible:ring-0"
               />
             </div>
 
-            {/* Rate */}
-            <div className="flex w-full max-w-60 items-start sm:col-start-3 sm:row-span-2 sm:row-start-1 sm:h-full sm:flex-col sm:justify-between">
-              <div className="flex w-1/2 flex-col gap-2 sm:w-full">
-                <Label className="capitalize">{t('currency_conversion.rate')}</Label>
-                <div className="flex flex-col">
-                  <Input
-                    aria-label="Rate"
-                    type="number"
-                    step={`0.${'0'.repeat(MAX_RATE_PRECISION - 1)}1`}
-                    min={0}
-                    value={rate}
-                    inputMode="numeric"
-                    onChange={onChangeRate}
-                    disabled={getCurrencyRate.isPending || currency === targetCurrency}
-                  />
-                  {currency !== targetCurrency && getCurrencyRate.isPending && (
-                    <span className="pointer-events-none text-xs text-gray-500">
-                      {t('currency_conversion.fetching_rate')}
-                    </span>
-                  )}
-                  {Boolean(rate) && (
-                    <>
-                      <span className="pointer-events-none text-xs text-gray-500">
-                        1 {currency} = {Number(rate).toFixed(ratePrecision)} {targetCurrency}
-                      </span>
-                      <span className="pointer-events-none text-xs text-gray-500">
-                        1 {targetCurrency} = {(1 / Number(rate)).toFixed(ratePrecision)} {currency}
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className="flex w-1/2 flex-col items-end gap-2 sm:w-full sm:items-start">
-                <Label className="capitalize">
-                  {t('actions.fetch')} {t('ui.expense.from')}
-                </Label>
-                <div className="flex h-11 items-center justify-center">
-                  <DateSelector
-                    mode="single"
-                    required
-                    disabled={dateDisabled}
-                    selected={rateDate}
-                    onSelect={setRateDate}
-                    popoverPortalled={false}
-                  />
-                </div>
-              </div>
+            <div className="flex flex-col gap-2 sm:items-end">
+              <Label className="text-muted-foreground text-[11px] font-semibold tracking-[.14em] uppercase">
+                {t('actions.fetch')} {t('ui.expense.from')}
+              </Label>
+              <DateSelector
+                mode="single"
+                required
+                disabled={dateDisabled}
+                selected={rateDate}
+                onSelect={setRateDate}
+                popoverPortalled={false}
+              />
             </div>
+          </div>
+
+          <div className="text-muted-foreground mt-3 min-h-9 text-[12.5px] leading-5">
+            {currency !== targetCurrency && getCurrencyRate.isPending && (
+              <span>{t('currency_conversion.fetching_rate')}</span>
+            )}
+            {Boolean(rate) && (
+              <div className="flex flex-col">
+                <span>
+                  1 {currency} = {Number(rate).toFixed(ratePrecision)} {targetCurrency}
+                </span>
+                <span>
+                  1 {targetCurrency} = {(1 / Number(rate)).toFixed(ratePrecision)} {currency}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>
