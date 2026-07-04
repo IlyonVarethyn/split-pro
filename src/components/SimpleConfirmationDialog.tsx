@@ -1,5 +1,5 @@
 import { type VariantProps } from 'class-variance-authority';
-import { useCallback, useState } from 'react';
+import { type FormEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import {
@@ -35,37 +35,44 @@ export const SimpleConfirmationDialog: React.FC<
   hasPermission,
   onConfirm,
   loading,
-  variant,
   children,
 }) => {
   const { t } = useTranslation();
   const [internalOpen, setInternalOpen] = useState(false);
-  const isControlled = typeof controlledOpen === 'boolean';
-  const open = isControlled ? controlledOpen! : internalOpen;
-  const setOpen = isControlled ? controlledOnOpenChange! : setInternalOpen;
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = controlledOnOpenChange ?? setInternalOpen;
+
+  const handleConfirm = useCallback(
+    async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      await onConfirm();
+      setOpen(false);
+    },
+    [onConfirm, setOpen],
+  );
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       {children && <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>}
-      <AlertDialogContent className="max-w-xs rounded-lg">
+      <AlertDialogContent className="max-w-xs">
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogTitle className="text-[16.5px] font-bold">{title}</AlertDialogTitle>
+          <AlertDialogDescription className="text-foreground/55 text-[13.5px] leading-relaxed">
+            {description}
+          </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={onCancel}>{t('actions.cancel')}</AlertDialogCancel>
+        <AlertDialogFooter className="mt-5 flex-row gap-2.5 sm:space-x-0">
+          <AlertDialogCancel
+            onClick={onCancel}
+            className="bg-foreground/7 h-auto flex-1 rounded-[12px] border-none py-3 text-sm font-semibold"
+          >
+            {hasPermission ? t('actions.cancel') : t('actions.understood')}
+          </AlertDialogCancel>
           {hasPermission && (
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-                await onConfirm();
-                setOpen(false);
-              }}
-            >
+            <form className="flex-1" onSubmit={handleConfirm}>
               <Button
                 type="submit"
-                size="sm"
-                variant={variant}
+                className="bg-negative/14 text-negative hover:bg-negative/20 w-full rounded-[12px] py-3 text-sm font-bold"
                 disabled={loading}
                 loading={loading}
               >
