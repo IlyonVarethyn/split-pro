@@ -393,7 +393,13 @@ input[type='number'] {
 @media (prefers-reduced-motion: reduce) {
   .screen-enter-tab,
   .screen-enter-push,
-  .screen-enter-pop {
+  .screen-enter-pop,
+  .animate-dialog-in,
+  .animate-rise-in,
+  .animate-success-pop,
+  .animate-caret-blink,
+  [class*='animate-accordion-down'],
+  [class*='animate-accordion-up'] {
     animation: none;
   }
 }

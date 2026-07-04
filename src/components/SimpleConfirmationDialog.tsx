@@ -64,7 +64,7 @@ export const SimpleConfirmationDialog: React.FC<
         <AlertDialogFooter className="mt-5 flex-row gap-2.5 sm:space-x-0">
           <AlertDialogCancel
             onClick={onCancel}
-            className="bg-foreground/7 h-auto flex-1 rounded-[12px] border-none py-3 text-sm font-semibold"
+            className="bg-foreground/7 mt-0 h-auto flex-1 rounded-[12px] border-none py-3 text-sm font-semibold active:scale-[.97]"
           >
             {hasPermission ? t('actions.cancel') : t('actions.understood')}
           </AlertDialogCancel>
@@ -72,7 +72,7 @@ export const SimpleConfirmationDialog: React.FC<
             <form className="flex-1" onSubmit={handleConfirm}>
               <Button
                 type="submit"
-                className="bg-negative/14 text-negative hover:bg-negative/20 w-full rounded-[12px] py-3 text-sm font-bold"
+                className="bg-negative/14 text-negative hover:bg-negative/20 w-full rounded-[12px] py-3 text-sm font-bold active:scale-[.97]"
                 disabled={loading}
                 loading={loading}
               >

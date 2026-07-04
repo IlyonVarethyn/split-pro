@@ -40,7 +40,7 @@ export const NotificationModal: React.FC = () => {
 
   useEffect(() => {
     if ('undefined' !== typeof window && 'serviceWorker' in navigator) {
-      // run only in browser
+      // Run only in browser
       navigator.serviceWorker.ready
         .then((reg) => {
           reg.pushManager
@@ -102,7 +102,7 @@ export const NotificationModal: React.FC = () => {
 
   return (
     <AlertDialog open={modalOpen}>
-      <AlertDialogContent className="rounded-lg">
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Enable notifications</AlertDialogTitle>
           <AlertDialogDescription>

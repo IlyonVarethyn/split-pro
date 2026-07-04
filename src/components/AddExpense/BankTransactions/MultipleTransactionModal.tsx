@@ -35,7 +35,7 @@ export const MultipleTransactionModal = ({
 
   return (
     <AlertDialog open={modalOpen}>
-      <AlertDialogContent className="rounded-lg">
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{t('expense_details.multiple_transactions.title')}</AlertDialogTitle>
           <AlertDialogDescription>
