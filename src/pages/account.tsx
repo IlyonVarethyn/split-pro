@@ -37,7 +37,7 @@ const AccountSection: React.FC<React.PropsWithChildren<{ title: string }>> = ({
   children,
 }) => (
   <section className="mt-8">
-    <div className="text-muted-foreground mb-1 text-[11px] font-semibold tracking-[.14em] uppercase">
+    <div className="text-muted-foreground mb-1 text-[11px] font-semibold tracking-[.06em] uppercase">
       {title}
     </div>
     <div className="flex flex-col">{children}</div>

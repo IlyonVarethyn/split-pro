@@ -317,6 +317,8 @@
       "title": "Statistiche gruppo",
       "total_expenses": "Spese totali"
     },
+    "member_count_one": "{{count}} partecipante",
+    "member_count_other": "{{count}} partecipanti",
     "messages": {
       "balances_recalculated": "Saldi ricalcolati con successo",
       "group_archived": "Gruppo archiviato con successo",
