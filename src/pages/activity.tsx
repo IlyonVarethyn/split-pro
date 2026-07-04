@@ -28,10 +28,14 @@ function getPaymentString(
   if (isDeleted) {
     return null;
   } else if (0n === expenseUserAmt) {
-    return <div className="text-foreground/35 text-[13px]">{t('ui.not_involved')}</div>;
+    return (
+      <div className="text-foreground/35 text-[13px] tabular-nums">{t('ui.not_involved')}</div>
+    );
   } else if (isSettlement) {
     return (
-      <div className={`text-[13px] ${user.id === paidBy ? 'text-positive' : 'text-negative'}`}>
+      <div
+        className={`text-[13px] tabular-nums ${user.id === paidBy ? 'text-positive' : 'text-negative'}`}
+      >
         {t('actors.you')}{' '}
         {user.id === paidBy ? t('ui.expense.you.paid') : t('ui.expense.you.received')}{' '}
         {toUIString(amount)}
@@ -41,7 +45,7 @@ function getPaymentString(
     const isPositive = (user.id === paidBy) !== amount < 0n;
 
     return (
-      <div className={`text-[13px] ${isPositive ? 'text-positive' : 'text-negative'}`}>
+      <div className={`text-[13px] tabular-nums ${isPositive ? 'text-positive' : 'text-negative'}`}>
         {t('actors.you')} {t(`ui.expense.you.${isPositive ? 'lent' : 'owe'}`)}{' '}
         {toUIString(expenseUserAmt)}
       </div>
@@ -59,9 +63,9 @@ const ActivityPage: NextPageWithUser = ({ user }) => {
         <Button
           variant="ghost"
           size="icon"
-          className="bg-foreground/6 h-[38px] w-[38px] rounded-full p-0"
+          className="bg-foreground/6 h-[38px] w-[38px] rounded-full p-0 active:scale-[.9]"
         >
-          <RefreshCcwDot className="size-5" />
+          <RefreshCcwDot className="text-foreground/60 size-5" />
         </Button>
       </Link>
     ),
@@ -95,7 +99,7 @@ const ActivityPage: NextPageWithUser = ({ user }) => {
               <Link
                 href={`/expenses/${e.expenseId}`}
                 key={e.expenseId}
-                className="border-foreground/8 flex gap-3.5 border-b py-4 active:opacity-70"
+                className="border-foreground/8 flex gap-3.5 border-b py-4 active:opacity-55"
               >
                 <div className="mt-0.5 flex-shrink-0">
                   <EntityAvatar entity={actor} size={34} />

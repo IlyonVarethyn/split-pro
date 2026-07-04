@@ -16,7 +16,7 @@ import { type NextPageWithUser } from '~/types';
 import { type RouterOutputs, api } from '~/utils/api';
 import { withI18nStaticProps } from '~/utils/i18n/server';
 
-const iconButtonClassName = 'bg-foreground/6 h-[34px] w-[34px] rounded-full p-0';
+const iconButtonClassName = 'bg-foreground/6 h-[34px] w-[34px] rounded-full p-0 active:scale-[.9]';
 
 type RecurringExpense = RouterOutputs['expense']['getRecurringExpenses'][number];
 
@@ -78,7 +78,7 @@ const RecurringExpenseItem: React.FC<RecurringExpenseItemProps> = ({
       <div className="flex flex-shrink-0 items-center gap-1.5">
         <EditRecurrenceDialog recurrenceId={item.id} currentSchedule={schedule}>
           <Button variant="ghost" size="icon" className={iconButtonClassName}>
-            <PencilIcon className="h-4 w-4" />
+            <PencilIcon className="text-foreground/60 h-4 w-4" />
           </Button>
         </EditRecurrenceDialog>
 
@@ -131,8 +131,12 @@ const RecurringPage: NextPageWithUser = () => {
         title={
           <div className="flex items-center gap-2">
             <Link href="/activity" aria-label={t('navigation.activity')}>
-              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full p-0">
-                <ChevronLeftIcon className="h-5 w-5" />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-full p-0 active:scale-[.9]"
+              >
+                <ChevronLeftIcon className="text-foreground/60 h-5 w-5" />
               </Button>
             </Link>
             <p className="text-[16px] font-normal">{t('navigation.recurring')}</p>
