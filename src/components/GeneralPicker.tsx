@@ -52,7 +52,8 @@ export const GeneralPicker: React.FC<{
     >
       <Command className="h-[50vh] bg-transparent">
         <CommandInput
-          className="bg-foreground/5 rounded-[13px] px-[15px] py-[11px] text-[14px]"
+          wrapperClassName="bg-foreground/5 rounded-[13px] border-b-0 px-[15px] py-[11px]"
+          className="h-auto p-0 text-[14px]"
           placeholder={placeholderText}
         />
         <CommandList>
@@ -63,7 +64,7 @@ export const GeneralPicker: React.FC<{
               value={extractValue(item)}
               keywords={extractKeywords ? extractKeywords(item) : []}
               onSelect={onSelectAndClose}
-              className="border-foreground/6 flex cursor-pointer items-center border-b px-1 py-[13px]"
+              className="border-foreground/6 flex cursor-pointer items-center border-b px-1 py-[13px] active:opacity-55"
             >
               <Check
                 className={cn(

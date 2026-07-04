@@ -2,6 +2,7 @@ import { CATEGORIES } from '~/lib/category';
 import { useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
 
+import { cn } from '~/lib/utils';
 import { CategoryIcon } from '../ui/categoryIcons';
 import { AppDrawer, AppDrawerClose } from '../ui/drawer';
 
@@ -38,11 +39,12 @@ export const CategoryPicker: React.FC<{
           <AppDrawerClose key={option.id} asChild>
             <button
               type="button"
-              className={
+              className={cn(
+                'rounded-full px-4 py-2.5 text-[13px] font-semibold active:scale-95',
                 option.id === category
-                  ? 'bg-primary/16 text-primary rounded-full px-4 py-2.5 text-[13px] font-semibold'
-                  : 'bg-foreground/7 text-foreground/70 rounded-full px-4 py-2.5 text-[13px] font-semibold'
-              }
+                  ? 'bg-primary/16 text-primary'
+                  : 'bg-foreground/7 text-foreground/70',
+              )}
               onClick={() => onCategoryPick(option.id)}
             >
               {option.label}
