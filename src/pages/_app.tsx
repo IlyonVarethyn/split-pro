@@ -21,7 +21,16 @@ import 'react-easy-crop/react-easy-crop.css';
 import '~/styles/globals.css';
 
 const poppins = Poppins({ weight: ['200', '300', '400', '500', '600', '700'], subsets: ['latin'] });
-const toastOptions = { duration: 1500 };
+const toastOptions = {
+  unstyled: true,
+  classNames: {
+    toast:
+      'bg-surface-toast border border-foreground/10 rounded-full px-[18px] py-[11px] flex items-center gap-2.5 shadow-[0_10px_28px_rgba(0,0,0,.45)] w-fit mx-auto',
+    title: 'text-[13px] font-medium text-foreground',
+    actionButton: 'text-[13px] font-bold text-primary bg-transparent',
+    icon: 'text-positive',
+  },
+};
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -85,7 +94,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <SessionProvider session={session}>
         <CurrencyHelpersProvider>
           <ThemeProvider attribute="class" defaultTheme="system">
-            <Toaster toastOptions={toastOptions} />
+            <Toaster
+              position="bottom-center"
+              offset={116}
+              mobileOffset={116}
+              duration={2800}
+              toastOptions={toastOptions}
+            />
             {(Component as NextPageWithUser).auth ? (
               <Auth pageProps={pageProps} Page={Component as NextPageWithUser} />
             ) : (
