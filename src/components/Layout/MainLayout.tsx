@@ -82,7 +82,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
         >
           {title ? (
             <div className="mb-2 flex items-center justify-between px-4 py-4">
-              <div className="text-foreground text-[28px] leading-tight font-bold tracking-[-0.3px]">
+              <div className="text-foreground text-[33px] leading-tight font-bold tracking-[-0.6px]">
                 {title}
               </div>
               {actions}
@@ -103,8 +103,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({
 
       {!hideAppBar && (
         <nav
-          className="border-foreground/10 bg-foreground/8 fixed left-1/2 z-40 flex w-fit -translate-x-1/2 gap-1 rounded-full border p-2 backdrop-blur-xl lg:hidden"
-          style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
+          className="bg-tab-bar border-foreground/10 fixed left-1/2 z-40 flex w-fit -translate-x-1/2 items-center gap-[3px] rounded-full border px-[9px] py-[7px] shadow-[0_10px_30px_rgba(0,0,0,.4)] backdrop-blur-[22px] backdrop-saturate-[1.8] lg:hidden"
+          style={{ bottom: 'calc(1.25rem + env(safe-area-inset-bottom))' }}
         >
           <NavItem
             title={t?.('navigation.balances') ?? 'Balances'}
@@ -156,12 +156,14 @@ const NavItem: React.FC<NavItemProps> = ({ title, Icon, link, currentPath }) => 
     <Link
       href={link}
       className={clsx(
-        'flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-medium transition-colors',
+        'flex items-center gap-1.5 rounded-full px-[13px] py-2.5 transition-all duration-[280ms] active:scale-[.92]',
         isActive ? 'bg-primary text-primary-foreground' : 'text-foreground/50',
       )}
     >
-      <Icon className="h-4 w-4" />
-      <span className={isActive ? undefined : 'sr-only'}>{title}</span>
+      <Icon className="h-5 w-5" />
+      <span className={clsx('text-[12.5px] font-bold', isActive ? undefined : 'sr-only')}>
+        {title}
+      </span>
     </Link>
   );
 };
