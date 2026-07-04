@@ -398,8 +398,8 @@ input[type='number'] {
   .animate-rise-in,
   .animate-success-pop,
   .animate-caret-blink,
-  [class*='animate-accordion-down'],
-  [class*='animate-accordion-up'] {
-    animation: none;
+  [data-state][class*='animate-accordion-down'],
+  [data-state][class*='animate-accordion-up'] {
+    animation: none !important;
   }
 }
