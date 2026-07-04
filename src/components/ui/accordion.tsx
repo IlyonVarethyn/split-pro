@@ -40,10 +40,19 @@ const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden text-sm transition-all"
+    // Default callers (no className) keep the classic height-keyframe
+    // animation on the root. A caller that supplies a className opts into
+    // fully driving its own root animation instead (e.g. a grid-based
+    // reveal) — the default animate classes are dropped rather than merged
+    // so the two animation strategies never fight over the same element.
+    className={
+      className
+        ? cn('overflow-hidden text-sm', className)
+        : 'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden text-sm transition-all'
+    }
     {...props}
   >
-    <div className={cn('pt-0 pb-4', className)}>{children}</div>
+    <div className="pt-0 pb-4">{children}</div>
   </AccordionPrimitive.Content>
 ));
 

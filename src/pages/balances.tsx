@@ -2,7 +2,7 @@ import { ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
 import { Download, PlusIcon } from 'lucide-react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { DownloadAppDrawer } from '~/components/Account/DownloadAppDrawer';
 import { BalanceEntry } from '~/components/Expense/BalanceEntry';
 import MainLayout from '~/components/Layout/MainLayout';
@@ -32,13 +32,6 @@ const BalancePage: NextPageWithUser = ({ user }) => {
       setUserDefaultCurrency(user.defaultCurrency);
     }
   }, [user, setUserDefaultCurrency]);
-
-  const allNonZeroCurrencies = useMemo(() => {
-    const nonZeroBalances = balanceQuery.data?.balances.flatMap((b) =>
-      b.currencies.filter((c) => c.amount !== 0n),
-    );
-    return nonZeroBalances ? [...new Set(nonZeroBalances.map((c) => c.currency))] : [];
-  }, [balanceQuery.data?.balances]);
 
   const shareWithFriends = useCallback(() => {
     if (navigator.share) {
@@ -85,7 +78,6 @@ const BalancePage: NextPageWithUser = ({ user }) => {
                 cumulatedQuery.data?.youOwe ?? [],
                 cumulatedQuery.data?.youGet ?? [],
               ].flat()}
-              currencies={allNonZeroCurrencies}
               className="mx-auto"
             />
           ) : (
@@ -93,12 +85,10 @@ const BalancePage: NextPageWithUser = ({ user }) => {
               <CumulatedBalanceDisplay
                 prefix={`${t('actors.you')} ${t('ui.expense.you.owe')}`}
                 cumulatedBalances={cumulatedQuery.data?.youOwe}
-                currencies={allNonZeroCurrencies}
               />
               <CumulatedBalanceDisplay
                 prefix={`${t('actors.you')} ${t('ui.expense.you.lent')}`}
                 cumulatedBalances={cumulatedQuery.data?.youGet}
-                currencies={allNonZeroCurrencies}
               />
             </>
           )}
@@ -141,8 +131,7 @@ const CumulatedBalanceDisplay: React.FC<{
   prefix?: string;
   className?: string;
   cumulatedBalances?: { currency: string; amount: bigint }[];
-  currencies: string[];
-}> = ({ prefix = '', className = '', cumulatedBalances, currencies }) => {
+}> = ({ prefix = '', className = '', cumulatedBalances }) => {
   if (!cumulatedBalances || cumulatedBalances.length === 0) {
     return null;
   }
@@ -155,10 +144,8 @@ const CumulatedBalanceDisplay: React.FC<{
       <div className="flex flex-wrap gap-1">
         <ConvertibleBalance
           balances={cumulatedBalances}
-          showMultiOption
+          stacked
           className="flex-wrap text-[29px] font-bold tracking-[-0.4px] tabular-nums"
-          overrideCurrencies={currencies}
-          forceShowButton={currencies.length > 1}
         />
       </div>
     </div>

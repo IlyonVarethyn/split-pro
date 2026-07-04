@@ -61,9 +61,6 @@ importers:
       '@trpc/server':
         specifier: ^11.2.0
         version: 11.8.0(typescript@5.7.3)
-      boring-avatars:
-        specifier: ^1.10.1
-        version: 1.11.2
       browser-image-compression:
         specifier: ^2.0.2
         version: 2.0.2
@@ -2490,9 +2487,6 @@ packages:
 
   bn.js@5.2.3:
     resolution: {integrity: sha512-EAcmnPkxpntVL+DS7bO1zhcZNvCkxqtkd0ZY53h06GNQ3DEkkGZ/gKgmDv6DdZQGj9BgfSPKtJJ7Dp1GPP8f7w==}
-
-  boring-avatars@1.11.2:
-    resolution: {integrity: sha512-3+wkwPeObwS4R37FGXMYViqc4iTrIRj5yzfX9Qy4mnpZ26sX41dGMhsAgmKks1r/uufY1pl4vpgzMWHYfJRb2A==}
 
   brace-expansion@2.0.3:
     resolution: {integrity: sha512-MCV/fYJEbqx68aE58kv2cA/kiky1G8vux3OR6/jbS+jIMe/6fJWa0DTzJU7dqijOWYwHi1t29FlfYI9uytqlpA==}
@@ -6581,8 +6575,6 @@ snapshots:
   baseline-browser-mapping@2.9.9: {}
 
   bn.js@5.2.3: {}
-
-  boring-avatars@1.11.2: {}
 
   brace-expansion@2.0.3:
     dependencies:

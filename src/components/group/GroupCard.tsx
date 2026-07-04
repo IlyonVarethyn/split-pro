@@ -44,7 +44,7 @@ export const GroupCard: React.FC<{
         </div>
       </div>
       <div className="shrink-0 text-right text-[16px] font-semibold tabular-nums">
-        <ConvertibleBalance balances={balances ?? []} entityId={id} entityType="group" />
+        <ConvertibleBalance stacked balances={balances ?? []} entityId={id} entityType="group" />
       </div>
     </Link>
   );

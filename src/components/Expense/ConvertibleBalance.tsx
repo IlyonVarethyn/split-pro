@@ -24,6 +24,16 @@ interface ConvertibleBalanceProps {
   showMultiOption?: boolean;
   forceShowButton?: boolean;
   withText?: boolean;
+  /**
+   * Renders a fully static amount display (colored primary amount, plus a
+   * muted per-currency secondary line when balances span >1 currency) and
+   * never the interactive currency-conversion Popover. Used by surfaces that
+   * must not nest an interactive control inside an outer `<Link>` (group
+   * rows) or that intentionally never sum different currencies (the
+   * balances hero). See CumulatedBalances.tsx for the surface that still
+   * needs the Popover-driven conversion picker.
+   */
+  stacked?: boolean;
   entityId?: number;
   entityType?: 'group';
 }
@@ -35,6 +45,7 @@ export const ConvertibleBalance: React.FC<ConvertibleBalanceProps> = ({
   showMultiOption = false,
   forceShowButton = false,
   withText = false,
+  stacked = false,
   entityId,
   entityType,
 }) => {
@@ -100,6 +111,7 @@ export const ConvertibleBalance: React.FC<ConvertibleBalanceProps> = ({
     },
     {
       enabled:
+        !stacked &&
         Boolean(selectedCurrency) &&
         selectedCurrency !== SHOW_ALL_VALUE &&
         0 < availableCurrencies.length,
@@ -168,16 +180,16 @@ export const ConvertibleBalance: React.FC<ConvertibleBalanceProps> = ({
     return <AmountDisplay withText={withText} className={className} amount={0n} currency="USD" />;
   }
 
-  if (withText && balances.length > 1) {
+  if ((withText || stacked) && balances.length > 1) {
     return (
       <span className="flex items-center gap-1">
-        <BalanceStackDisplay className={className} balances={balances} />
+        <BalanceStackDisplay className={className} balances={balances} withText={withText} />
       </span>
     );
   }
 
   // If only one currency, no conversion needed, unless different preference exists
-  if (1 === availableCurrencies.length && !forceShowButton) {
+  if (stacked || (1 === availableCurrencies.length && !forceShowButton)) {
     const balance = balances[0]!;
     return (
       <AmountDisplay
@@ -268,7 +280,8 @@ export const ConvertibleBalance: React.FC<ConvertibleBalanceProps> = ({
 const BalanceStackDisplay: React.FC<{
   className?: string;
   balances: { currency: string; amount: bigint }[];
-}> = ({ className = '', balances }) => {
+  withText?: boolean;
+}> = ({ className = '', balances, withText = false }) => {
   const { getCurrencyHelpersCached } = useTranslationWithUtils();
   const [primary, ...secondary] = balances;
 
@@ -282,12 +295,12 @@ const BalanceStackDisplay: React.FC<{
         className={className}
         amount={primary.amount}
         currency={primary.currency}
-        withText
+        withText={withText}
       />
       {secondary.map((balance) => (
         <div key={balance.currency} className="text-foreground/40 mt-0.5 text-[12px] tabular-nums">
           {balance.amount > 0n ? '+' : ''}
-          {getCurrencyHelpersCached(balance.currency).toUIString(balance.amount)}
+          {getCurrencyHelpersCached(balance.currency).toUIString(balance.amount, true)}
         </div>
       ))}
     </div>

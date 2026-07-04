@@ -89,8 +89,11 @@ const BalancePage: NextPageWithUser = () => {
                     <AccordionTrigger className="text-foreground/45 py-3 text-left text-[13px] font-medium hover:no-underline [&>svg]:transition-transform [&>svg]:duration-250">
                       {t('group_details.group_info.archived')} ({archivedGroupQuery.data.length})
                     </AccordionTrigger>
-                    <AccordionContent className="pb-0 data-[state=closed]:animate-none data-[state=open]:animate-none">
-                      <div className="flex flex-col opacity-60">
+                    <AccordionContent
+                      forceMount
+                      className="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(.22,.61,.36,1)] data-[state=open]:grid-rows-[1fr] data-[state=open]:opacity-60 motion-reduce:transition-none"
+                    >
+                      <div className="flex min-h-0 flex-col">
                         {archivedGroupQuery.data.map((g) => (
                           <GroupCard
                             key={g.id}
