@@ -11,6 +11,7 @@
     "debug_info": "Informazioni di debug",
     "debug_info_details": {
       "copy_failed": "Errore nel copiare le informazioni di debug",
+      "copy_to_clipboard": "Copia negli appunti",
       "description": "Incolla le informazioni qui sotto quando crei una richiesta di assistenza:",
       "git": "Git",
       "new_version_available": "È disponibile una nuova versione:",
@@ -28,6 +29,7 @@
     },
     "download_splitpro_data": "Scarica i dati di SplitPro",
     "edit_name": {
+      "name_label": "Nome",
       "placeholder": "Inserisci il nome",
       "title": "Modifica nome"
     },
@@ -44,13 +46,19 @@
       "note": "Nota: al momento supporta solo l'importazione di amici e gruppi. Non importerà transazioni. Ci stiamo lavorando."
     },
     "logout": "Esci",
+    "logout_confirm": {
+      "title": "Uscire?",
+      "description": "Dovrai accedere di nuovo per usare il tuo account."
+    },
     "messages": {
       "submit_error": "Invio del feedback fallito",
       "submit_success": "Feedback inviato"
     },
     "notifications": {
-      "disable_notification": "Disabilita notifiche",
-      "enable_notification": "Abilita notifiche",
+      "title": "Notifiche push",
+      "description": "Nuove spese, rimborsi e promemoria dai tuoi gruppi",
+      "enabled": "Attive",
+      "disabled": "Disattive",
       "messages": {
         "notification_granted": "Riceverai ora le notifiche"
       }
@@ -58,12 +66,22 @@
     "star_on_github": "Dacci una stella su GitHub",
     "submit_feedback": "Invia feedback",
     "submit_feedback_details": {
+      "intro": "Raccontaci cosa funziona e cosa no. Il feedback arriva direttamente ai maintainer.",
       "placeholder": "Inserisci il tuo feedback",
       "title": "Invia feedback"
     },
     "support_us": "Supportaci",
     "title": "Account",
-    "write_review": "Scrivi una recensione"
+    "write_review": "Scrivi una recensione",
+    "sections": {
+      "preferences": "Preferenze",
+      "data_tools": "Dati e strumenti",
+      "open_source": "Progetto open source"
+    },
+    "profile": {
+      "title": "Profilo"
+    },
+    "bank_connection": "Conto bancario"
   },
   "actions": {
     "add_expense": "Aggiungi spesa",
@@ -85,7 +103,8 @@
     "reconnect": "Riconnettiti",
     "save": "Salva",
     "settle_up": "Regola",
-    "submit": "Invia"
+    "submit": "Invia",
+    "open": "Apri"
   },
   "actors": {
     "all": "Tutti",

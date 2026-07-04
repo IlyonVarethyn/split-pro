@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Camera, Pencil, X } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import Cropper, { type Area } from 'react-easy-crop';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { prepareImageForUpload, uploadImage, validateUploadSize } from '~/utils/imageUpload';
+import { useAppStore } from '~/store/appStore';
+import { isCurrencyCode, parseCurrencyCode } from '~/lib/currency';
 
 import { AppDrawer } from '../ui/drawer';
 import { EntityAvatar } from '../ui/avatar';
@@ -16,9 +18,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Slider } from '../ui/slider';
 import { Button } from '../ui/button';
-import { useAppStore } from '~/store/appStore';
 import { CurrencyPicker } from '../AddExpense/CurrencyPicker';
-import { isCurrencyCode, parseCurrencyCode } from '~/lib/currency';
 
 const createImage = async (url: string) => {
   const image = new Image();
@@ -83,8 +83,16 @@ const detailsSchema = (t: TFunction) =>
 
 type UpdateDetailsFormValues = z.infer<ReturnType<typeof detailsSchema>>;
 
-export const UpdateName: React.FC<{
+export const UpdateDetails: React.FC<{
   className?: string;
+  /**
+   * `profile` (default) is the full personal-account editor: centered avatar,
+   * name field and the personal default-currency row, titled "Profile".
+   * `compact` is used to rename any other entity (e.g. a group): same avatar +
+   * name editor, but no currency section and a bare pencil trigger sized via
+   * `className`, matching the pre-redesign `UpdateName` behaviour.
+   */
+  variant?: 'profile' | 'compact';
   defaultName: string;
   defaultImage?: string | null;
   defaultCurrency?: string | null;
@@ -93,7 +101,16 @@ export const UpdateName: React.FC<{
     image?: string | null;
     defaultCurrency?: string | null;
   }) => void | Promise<void>;
-}> = ({ className, defaultName, defaultImage, defaultCurrency, onNameSubmit }) => {
+}> = ({
+  className,
+  variant = 'profile',
+  defaultName,
+  defaultImage,
+  defaultCurrency,
+  onNameSubmit,
+}) => {
+  const isCompact = 'compact' === variant;
+  const showCurrency = !isCompact;
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -128,8 +145,6 @@ export const UpdateName: React.FC<{
     },
     [imageSrc],
   );
-
-  const trigger = useMemo(() => <Pencil className={className} />, [className]);
 
   const handleOpenChange = useCallback(
     (openVal: boolean) => {
@@ -233,11 +248,41 @@ export const UpdateName: React.FC<{
     setCroppedAreaPixels(null);
   }, [detailForm, imageSrc]);
 
+  const handleSelectDefaultCurrency = useCallback(
+    (currency: string | null) => {
+      detailForm.setValue('defaultCurrency', currency, { shouldDirty: true });
+    },
+    [detailForm],
+  );
+
+  const trigger = useMemo(
+    () =>
+      isCompact ? (
+        <Pencil className={className} />
+      ) : (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="bg-foreground/6 h-[34px] w-[34px] rounded-full p-0"
+        >
+          <Pencil className="h-4 w-4" />
+        </Button>
+      ),
+    [className, isCompact],
+  );
+
   const field = useCallback(
     ({ field }: any) => (
       <FormItem className="w-full">
+        <div className="text-foreground/40 mb-1.5 text-[11px] tracking-[.05em] uppercase">
+          {t('account.edit_name.name_label')}
+        </div>
         <FormControl>
-          <Input className="text-lg" placeholder={t('account.edit_name.placeholder')} {...field} />
+          <Input
+            className="border-foreground/18 focus-visible:border-primary h-auto rounded-none border-0 border-b-[1.5px] bg-transparent px-0 pb-2.5 text-[16px] font-medium ring-offset-0 focus-visible:ring-0"
+            placeholder={t('account.edit_name.placeholder')}
+            {...field}
+          />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -245,32 +290,39 @@ export const UpdateName: React.FC<{
     [t],
   );
 
+  const defaultCurrencyValue = detailForm.watch('defaultCurrency');
+
+  const hasImage = null !== detailForm.watch('image') && undefined !== detailForm.watch('image');
+
   return (
     <AppDrawer
       trigger={trigger}
       open={drawerOpen}
       onOpenChange={handleOpenChange}
       leftAction={t('actions.close')}
-      title={t('account.edit_name.title')}
+      title={isCompact ? t('account.edit_name.title') : t('account.profile.title')}
       shouldCloseOnAction={false}
       className="h-[80vh]"
       actionTitle={t('actions.save')}
       actionOnClick={handleOnActionClick}
     >
       <Form {...detailForm}>
-        <form className="mt-4 flex w-full flex-col gap-8" onSubmit={handleOnActionClick}>
+        <form className="mt-4 flex w-full flex-col gap-6" onSubmit={handleOnActionClick}>
           {!imageSrc ? (
-            <div className="flex w-full items-center justify-around px-16">
-              <EntityAvatar
-                entity={{
-                  name: detailForm.watch('name'),
-                  image: detailForm.watch('image'),
-                }}
-                size={80}
-              />
-              <div className="flex items-center gap-4">
-                <Label htmlFor="profile-image-input" className="cursor-pointer">
-                  <Camera className="size-5" />
+            <div className="flex flex-col items-center gap-1.5">
+              <div className="relative h-[76px] w-[76px]">
+                <EntityAvatar
+                  entity={{
+                    name: detailForm.watch('name'),
+                    image: detailForm.watch('image'),
+                  }}
+                  size={76}
+                />
+                <Label
+                  htmlFor="profile-image-input"
+                  className="border-surface-sheet bg-foreground/10 absolute -right-[3px] -bottom-[3px] flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border-2"
+                >
+                  <Pencil className="text-foreground/70 h-3 w-3" />
                   <Input
                     onChange={handleFileChange}
                     id="profile-image-input"
@@ -279,20 +331,20 @@ export const UpdateName: React.FC<{
                     className="hidden"
                   />
                 </Label>
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  disabled={detailForm.watch('image') === null}
+              </div>
+              {hasImage ? (
+                <button
+                  type="button"
+                  className="text-foreground/40 text-[11.5px] active:opacity-60"
                   onClick={handleClearImage}
                 >
-                  <X className="size-5" />
-                </Button>
-              </div>
+                  {t('account.edit_name.remove_avatar')}
+                </button>
+              ) : null}
             </div>
           ) : (
             <div className="space-y-3">
-              <div className="relative h-64 w-full overflow-hidden rounded-lg bg-black/5">
+              <div className="bg-foreground/5 relative h-64 w-full overflow-hidden rounded-[18px]">
                 <Cropper
                   image={imageSrc}
                   crop={crop}
@@ -305,7 +357,7 @@ export const UpdateName: React.FC<{
                   onZoomChange={setZoom}
                 />
               </div>
-              <div className="px-2 pb-2">
+              <div className="bg-foreground/5 rounded-[18px] px-[18px] py-4">
                 <Label className="mb-4 block" htmlFor="zoom-slider">
                   {t('account.edit_name.zoom')}
                 </Label>
@@ -320,29 +372,38 @@ export const UpdateName: React.FC<{
               </div>
             </div>
           )}
-          <FormField control={detailForm.control} name="name" render={field} />
-          <div className="flex justify-between space-y-2">
-            <Label className="text-md">{t('account.default_balance_currency')}</Label>
-            {(() => {
-              const defaultCurrency = detailForm.watch('defaultCurrency');
 
-              return (
-                <CurrencyPicker
-                  currentCurrency={
-                    defaultCurrency && isCurrencyCode(defaultCurrency)
-                      ? parseCurrencyCode(defaultCurrency)
-                      : null
-                  }
-                  allowClear
-                  onCurrencyPick={(currency) => {
-                    detailForm.setValue('defaultCurrency', currency, { shouldDirty: true });
-                  }}
-                />
-              );
-            })()}
-          </div>
+          <FormField control={detailForm.control} name="name" render={field} />
+
+          {showCurrency ? (
+            <div className="border-foreground/8 flex items-center justify-between border-b py-[15px]">
+              <span className="text-[15px] font-medium">
+                {t('account.default_balance_currency')}
+              </span>
+              <CurrencyPicker
+                currentCurrency={
+                  defaultCurrencyValue && isCurrencyCode(defaultCurrencyValue)
+                    ? parseCurrencyCode(defaultCurrencyValue)
+                    : null
+                }
+                allowClear
+                onCurrencyPick={handleSelectDefaultCurrency}
+              />
+            </div>
+          ) : null}
         </form>
       </Form>
     </AppDrawer>
   );
 };
+
+export const UpdateName: React.FC<{
+  className?: string;
+  defaultName: string;
+  defaultImage?: string | null;
+  onNameSubmit: (values: {
+    name: string;
+    image?: string | null;
+    defaultCurrency?: string | null;
+  }) => void | Promise<void>;
+}> = (props) => <UpdateDetails {...props} variant="compact" />;

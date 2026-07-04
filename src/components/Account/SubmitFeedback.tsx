@@ -1,17 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ChevronRight, MessageSquare } from 'lucide-react';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 import { type TFunction, useTranslation } from 'next-i18next';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { api } from '~/utils/api';
 
+import { AccountButton } from './AccountButton';
 import { AppDrawer } from '../ui/drawer';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import { Textarea } from '../ui/textarea';
-import { AccountButton } from './AccountButton';
 
 const feedbackSchema = (t: TFunction) =>
   z.object({
@@ -49,12 +48,7 @@ export const SubmitFeedback: React.FC = () => {
   const handleClose = useCallback(() => setFeedbackOpen(false), []);
 
   const trigger = useMemo(
-    () => (
-      <AccountButton>
-        <MessageSquare className="h-5 w-5 text-green-500" />
-        {t('account.submit_feedback')}
-      </AccountButton>
-    ),
+    () => <AccountButton label={t('account.submit_feedback')} value={t('actions.open')} />,
     [t],
   );
 
@@ -67,8 +61,7 @@ export const SubmitFeedback: React.FC = () => {
       <FormItem className="w-full">
         <FormControl>
           <Textarea
-            className="text-lg placeholder:text-sm"
-            rows={5}
+            className="bg-foreground/5 placeholder:text-foreground/35 min-h-[110px] rounded-[14px] border-0 px-4 py-3.5 text-[14.5px]"
             placeholder={t('account.submit_feedback_details.placeholder')}
             {...field}
           />
@@ -93,10 +86,13 @@ export const SubmitFeedback: React.FC = () => {
       actionOnClick={handleActionClick}
     >
       <div>
+        <p className="text-foreground/50 mt-4 text-[13.5px] leading-relaxed">
+          {t('account.submit_feedback_details.intro')}
+        </p>
         <Form {...feedbackForm}>
           <form
             onSubmit={feedbackForm.handleSubmit(onGroupSubmit)}
-            className="mt-4 flex w-full items-start gap-4"
+            className="mt-3.5 flex w-full items-start gap-4"
           >
             <FormField control={feedbackForm.control} name="feedback" render={field} />
           </form>

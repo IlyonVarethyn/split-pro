@@ -30,6 +30,7 @@
       "apply_avatar": "Apply avatar",
       "avatar_label": "Profile picture",
       "avatar_preview": "Avatar preview",
+      "name_label": "Name",
       "placeholder": "Enter name",
       "remove_avatar": "Remove avatar",
       "select_avatar": "Select picture",
@@ -49,13 +50,19 @@
       "note": "Note: It currently only supports importing friends and groups. It will not import transactions. We are working on it."
     },
     "logout": "Logout",
+    "logout_confirm": {
+      "title": "Log out?",
+      "description": "You'll need to sign in again to access your account."
+    },
     "messages": {
       "submit_error": "Failed to update details",
       "submit_success": "Details updated"
     },
     "notifications": {
-      "disable_notification": "Disable notification",
-      "enable_notification": "Enable notification",
+      "title": "Push notifications",
+      "description": "New expenses, reimbursements and reminders from your groups",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
       "messages": {
         "notification_granted": "You will receive notifications now"
       }
@@ -63,6 +70,7 @@
     "star_on_github": "Star us on GitHub",
     "submit_feedback": "Submit feedback",
     "submit_feedback_details": {
+      "intro": "Tell us what works and what doesn't. Feedback goes straight to the maintainers.",
       "placeholder": "Enter your feedback",
       "title": "Submit feedback"
     },
@@ -78,10 +86,20 @@
       "version": "Version",
       "new_version_available": "A new version is available:",
       "copy_failed": "Failed to copy debug info to clipboard",
+      "copy_to_clipboard": "Copy to clipboard",
       "send_test_notification": "Send test notification",
       "test_notification_sent": "Test notification sent",
       "test_notification_failed": "Could not send test notification"
-    }
+    },
+    "sections": {
+      "preferences": "Preferences",
+      "data_tools": "Data & tools",
+      "open_source": "Open source project"
+    },
+    "profile": {
+      "title": "Profile"
+    },
+    "bank_connection": "Bank account"
   },
   "actions": {
     "add_expense": "Add expense",
@@ -103,7 +121,8 @@
     "settle_up": "Settle up",
     "submit": "Submit",
     "reconnect": "Reconnect",
-    "connect": "Connect"
+    "connect": "Connect",
+    "open": "Open"
   },
   "actors": {
     "all": "All",

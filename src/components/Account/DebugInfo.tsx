@@ -83,34 +83,33 @@ export const DebugInfo: React.FC<React.PropsWithChildren> = ({ children }) => {
           <AlertDialogTitle>{t('account.debug_info_details.title')}</AlertDialogTitle>
           <AlertDialogDescription>
             {t('account.debug_info_details.description')}
-            <DebugInfoRow
-              label={t('account.debug_info_details.user_agent')}
-              value={navigator.userAgent}
-              className="mt-4"
-            />
-
-            <DebugInfoRow
-              label={t('account.debug_info_details.git')}
-              value={env.NEXT_PUBLIC_GIT_SHA}
-              className="mt-4"
-            />
-            <DebugInfoRow
-              label={t('account.debug_info_details.version')}
-              value={env.NEXT_PUBLIC_APP_VERSION}
-              className="mt-4"
-            />
+            <span className="mt-4 flex flex-col font-mono text-[12.5px] leading-[2.1]">
+              <DebugInfoRow
+                label={t('account.debug_info_details.user_agent')}
+                value={navigator.userAgent}
+              />
+              <DebugInfoRow
+                label={t('account.debug_info_details.git')}
+                value={env.NEXT_PUBLIC_GIT_SHA}
+              />
+              <DebugInfoRow
+                label={t('account.debug_info_details.version')}
+                value={env.NEXT_PUBLIC_APP_VERSION}
+              />
+            </span>
             {newVersion &&
             env.NEXT_PUBLIC_APP_VERSION &&
             newVersion !== env.NEXT_PUBLIC_APP_VERSION ? (
-              <p className="mt-4 text-sm text-yellow-600">
+              <span className="text-primary mt-4 block text-sm">
                 {t('account.debug_info_details.new_version_available')}: {newVersion}
-              </p>
+              </span>
             ) : null}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
+        <AlertDialogFooter className="flex-col gap-2 sm:flex-col sm:space-x-0">
           <Button
             variant="secondary"
+            className="bg-foreground/7 h-auto w-full rounded-[14px] py-3 text-[14px] font-semibold"
             onClick={() => {
               void onSendTestNotification();
             }}
@@ -118,30 +117,29 @@ export const DebugInfo: React.FC<React.PropsWithChildren> = ({ children }) => {
           >
             {t('account.debug_info_details.send_test_notification')}
           </Button>
-          <AlertDialogCancel>{t('actions.close')}</AlertDialogCancel>
-          <AlertDialogAction onClick={copyToClipboard}>{t('actions.copy')}</AlertDialogAction>
+          <AlertDialogAction
+            className="bg-foreground/7 text-foreground hover:bg-foreground/10 h-auto w-full rounded-[14px] py-3 text-[14px] font-semibold shadow-none"
+            onClick={copyToClipboard}
+          >
+            {t('account.debug_info_details.copy_to_clipboard')}
+          </AlertDialogAction>
+          <AlertDialogCancel className="h-auto w-full rounded-[14px] py-3 text-[14px] font-semibold">
+            {t('actions.close')}
+          </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
 };
 
-const Label: React.FC<React.PropsWithChildren<{ className?: string }>> = ({
-  children,
-  className,
-}) => <span className={cn('text-sm text-white', className)}>{children}</span>;
-
-const Value: React.FC<React.PropsWithChildren<{ className?: string }>> = ({
-  children,
-  className,
-}) => <span className={cn('text-primary text-sm', className)}>{children}</span>;
-
-export const DebugInfoRow: React.FC<
-  React.PropsWithChildren<{ label: string; value?: string | null; className?: string }>
-> = ({ label, value, className }) =>
+export const DebugInfoRow: React.FC<{
+  label: string;
+  value?: string | null;
+  className?: string;
+}> = ({ label, value, className }) =>
   value ? (
-    <span className={cn('flex flex-col', className)}>
-      <Label>{label}</Label>
-      <Value>{value}</Value>
+    <span className={cn('flex items-center justify-between', className)}>
+      <span className="text-foreground/40">{label}</span>
+      <span className="text-foreground/65 truncate pl-4">{value}</span>
     </span>
   ) : null;
