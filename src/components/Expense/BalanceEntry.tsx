@@ -32,7 +32,7 @@ export const BalanceEntry: React.FC<{
         {displayName(entity)}
       </div>
       <div className="shrink-0 text-right" onClick={stopPropagation}>
-        <ConvertibleBalance withText balances={balances} entityId={id} />
+        <ConvertibleBalance withText stacked balances={balances} entityId={id} />
       </div>
     </Link>
   );

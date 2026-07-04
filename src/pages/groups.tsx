@@ -91,7 +91,7 @@ const BalancePage: NextPageWithUser = () => {
                     </AccordionTrigger>
                     <AccordionContent
                       forceMount
-                      className="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(.22,.61,.36,1)] data-[state=open]:grid-rows-[1fr] data-[state=open]:opacity-60 motion-reduce:transition-none"
+                      className="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity,visibility] duration-300 ease-[cubic-bezier(.22,.61,.36,1)] data-[state=closed]:invisible data-[state=open]:grid-rows-[1fr] data-[state=open]:opacity-60 motion-reduce:transition-none"
                     >
                       <div className="flex min-h-0 flex-col">
                         {archivedGroupQuery.data.map((g) => (
