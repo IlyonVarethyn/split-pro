@@ -35,6 +35,11 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
 
+  --color-surface-sheet: var(--surface-sheet);
+  --color-surface-dialog: var(--surface-dialog);
+  --color-surface-toast: var(--surface-toast);
+  --color-tab-bar: var(--tab-bar);
+
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
@@ -42,6 +47,10 @@
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
   --animate-caret-blink: caret-blink 1.25s ease-out infinite;
+
+  --animate-dialog-in: dialog-in 0.28s var(--ease-quiet) both;
+  --animate-success-pop: success-pop 0.5s var(--ease-quiet) both;
+  --animate-rise-in: rise-in 0.4s var(--ease-quiet) both;
 
   @keyframes accordion-down {
     from {
@@ -68,6 +77,70 @@
     20%,
     50% {
       opacity: 0;
+    }
+  }
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes success-pop {
+    0% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    55% {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes screen-rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes screen-push {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes screen-pop {
+    from {
+      opacity: 0;
+      transform: translateX(-26px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
     }
   }
 }
@@ -148,6 +221,12 @@
   --negative: var(--color-orange-600);
 
   --radius: 0.875rem;
+
+  --surface-sheet: hsl(0 0% 100%);
+  --surface-dialog: hsl(0 0% 100%);
+  --surface-toast: hsl(0 0% 100%);
+  --tab-bar: hsl(0 0% 98% / 0.72);
+  --ease-quiet: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .dark {
@@ -181,6 +260,11 @@
 
   --positive: var(--color-emerald-400);
   --negative: var(--color-orange-400);
+
+  --surface-sheet: #15191b;
+  --surface-dialog: #1b2124;
+  --surface-toast: #1e2528;
+  --tab-bar: hsl(200 7% 12% / 0.72); /* rgba(28,30,32,.72) */
 }
 
 @layer base {
@@ -293,5 +377,23 @@ input[type='number'] {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+.screen-enter-tab {
+  animation: screen-rise 0.34s var(--ease-quiet) both;
+}
+.screen-enter-push {
+  animation: screen-push 0.36s var(--ease-quiet) both;
+}
+.screen-enter-pop {
+  animation: screen-pop 0.34s var(--ease-quiet) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen-enter-tab,
+  .screen-enter-push,
+  .screen-enter-pop {
+    animation: none;
   }
 }
