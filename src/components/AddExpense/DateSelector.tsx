@@ -18,17 +18,17 @@ export const DateSelector: React.FC<DateSelectorProps> = ({
   const { t, toUIDate } = useTranslationWithUtils();
 
   return (
-    <div className="flex flex-wrap items-center gap-4">
+    <div className="flex flex-wrap items-center gap-2">
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
             className={cn(
-              'h-9 justify-start p-0 text-left font-normal',
+              'bg-foreground/7 text-foreground/70 h-auto justify-start rounded-full px-3.5 py-2 text-left text-[12.5px] font-semibold',
               !calendarProps.selected && 'text-muted-foreground',
             )}
           >
-            <CalendarIcon className="text-primary mr-2 size-6" />
+            <CalendarIcon className="text-foreground/45 mr-1.5 size-4" />
             {calendarProps.selected ? (
               toUIDate(calendarProps.selected, { useToday: true })
             ) : (
@@ -36,8 +36,15 @@ export const DateSelector: React.FC<DateSelectorProps> = ({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" portalled={popoverPortalled}>
-          <Calendar fixedWeeks {...calendarProps} />
+        <PopoverContent
+          className="bg-surface-sheet border-foreground/8 w-auto rounded-[16px] p-2"
+          portalled={popoverPortalled}
+        >
+          <Calendar
+            fixedWeeks
+            {...calendarProps}
+            disabled={calendarProps.disabled ?? { after: new Date() }}
+          />
         </PopoverContent>
       </Popover>
     </div>

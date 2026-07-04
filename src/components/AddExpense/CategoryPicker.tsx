@@ -1,10 +1,9 @@
-import { CATEGORIES, type CategoryItem } from '~/lib/category';
+import { CATEGORIES } from '~/lib/category';
 import { useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
 
-import { Button } from '../ui/button';
 import { CategoryIcon } from '../ui/categoryIcons';
-import { AppDrawer, AppDrawerClose, DrawerClose } from '../ui/drawer';
+import { AppDrawer, AppDrawerClose } from '../ui/drawer';
 
 export const CategoryPicker: React.FC<{
   category: string;
@@ -14,51 +13,43 @@ export const CategoryPicker: React.FC<{
 
   const trigger = useMemo(
     () => (
-      <div className="bg-foreground/8 flex w-[73px] cursor-pointer justify-center rounded-full py-2">
-        <CategoryIcon category={category} size={20} />
+      <div className="bg-foreground/7 text-foreground/70 flex cursor-pointer items-center justify-center rounded-full px-3.5 py-2 text-[12.5px] font-semibold">
+        <CategoryIcon category={category} size={16} />
       </div>
     ),
     [category],
   );
 
+  const categoryOptions = useMemo(
+    () =>
+      Object.entries(CATEGORIES).flatMap(([categoryName, categoryItems]) =>
+        categoryItems.map((key: string) => ({
+          id: 'other' === key ? categoryName : key,
+          label: t(`categories_list.${categoryName}.items.${key}`, { ns: 'categories' }),
+        })),
+      ),
+    [t],
+  );
+
   return (
     <AppDrawer trigger={trigger} title={t('title')} className="h-[70vh]" shouldCloseOnAction>
-      {Object.entries(CATEGORIES).map(([categoryName, categoryItems]) => (
-        <div key={categoryName} className="mb-8">
-          <h3 className="mb-4 text-lg font-semibold">
-            {t(`categories_list.${categoryName}.name`)}
-          </h3>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(75px,1fr))] gap-4">
-            {categoryItems.map((key: string) => {
-              const handleClick = useMemo(
-                () => () => {
-                  onCategoryPick('other' === key ? categoryName : key);
-                },
-                [key],
-              );
-
-              return (
-                <AppDrawerClose key={key} asChild>
-                  <Button
-                    variant="ghost"
-                    className="flex h-[75px] w-[75px] flex-col items-center justify-start gap-1 justify-self-center py-3 text-center"
-                    onClick={handleClick}
-                  >
-                    <span className="block flex-shrink-0 text-2xl">
-                      <CategoryIcon
-                        category={(key === 'other' ? categoryName : key) as CategoryItem}
-                      />
-                    </span>
-                    <span className="block text-xs text-wrap">
-                      {t(`categories_list.${categoryName}.items.${key}`, { ns: 'categories' })}
-                    </span>
-                  </Button>
-                </AppDrawerClose>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+      <div className="flex flex-wrap gap-2">
+        {categoryOptions.map((option) => (
+          <AppDrawerClose key={option.id} asChild>
+            <button
+              type="button"
+              className={
+                option.id === category
+                  ? 'bg-primary/16 text-primary rounded-full px-4 py-2.5 text-[13px] font-semibold'
+                  : 'bg-foreground/7 text-foreground/70 rounded-full px-4 py-2.5 text-[13px] font-semibold'
+              }
+              onClick={() => onCategoryPick(option.id)}
+            >
+              {option.label}
+            </button>
+          </AppDrawerClose>
+        ))}
+      </div>
     </AppDrawer>
   );
 };

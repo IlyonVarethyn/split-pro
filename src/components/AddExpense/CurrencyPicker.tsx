@@ -37,7 +37,7 @@ function CurrencyPickerInner({
     () => (
       <Button
         variant="outline"
-        className="bg-foreground/8 w-[70px] rounded-full border-none py-2 text-base"
+        className="bg-foreground/8 rounded-full border-none px-[13px] py-2 text-[13px] font-semibold"
       >
         {currentCurrency ?? ''}
       </Button>
@@ -104,10 +104,15 @@ function CurrencyPickerInner({
 
       const translatedName = getCurrencyName(currency.code);
       return (
-        <>
-          <p>{translatedName}</p>
-          <p className="text-muted-foreground">{currency.code}</p>
-        </>
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="text-foreground/70 w-[34px] shrink-0 text-[15px] font-semibold">
+            {currency.code}
+          </div>
+          <div className="min-w-0">
+            <p className="text-[14.5px] font-medium">{currency.code}</p>
+            <p className="text-foreground/40 truncate text-[11.5px]">{translatedName}</p>
+          </div>
+        </div>
       );
     },
     [getCurrencyName],

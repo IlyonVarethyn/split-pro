@@ -50,8 +50,11 @@ export const GeneralPicker: React.FC<{
       className={cn('h-[70vh]', className)}
       shouldCloseOnAction
     >
-      <Command className="h-[50vh]">
-        <CommandInput className="text-lg" placeholder={placeholderText} />
+      <Command className="h-[50vh] bg-transparent">
+        <CommandInput
+          className="bg-foreground/5 rounded-[13px] px-[15px] py-[11px] text-[14px]"
+          placeholder={placeholderText}
+        />
         <CommandList>
           <CommandEmpty>{noOptionsText}</CommandEmpty>
           {items.map((item) => (
@@ -60,10 +63,15 @@ export const GeneralPicker: React.FC<{
               value={extractValue(item)}
               keywords={extractKeywords ? extractKeywords(item) : []}
               onSelect={onSelectAndClose}
-              className="flex cursor-pointer items-center"
+              className="border-foreground/6 flex cursor-pointer items-center border-b px-1 py-[13px]"
             >
-              <Check className={cn('mr-2 h-4 w-4', selected(item) ? 'opacity-100' : 'opacity-0')} />
-              <div className="flex gap-2">{render(item)}</div>
+              <Check
+                className={cn(
+                  'text-primary order-2 ml-auto h-4 w-4',
+                  selected(item) ? 'opacity-100' : 'opacity-0',
+                )}
+              />
+              <div className="min-w-0 flex-1">{render(item)}</div>
             </CommandItem>
           ))}
         </CommandList>
