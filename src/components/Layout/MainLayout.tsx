@@ -11,7 +11,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+
 import { LoadingSpinner } from '../ui/spinner';
+import { ScreenTransition } from './ScreenTransition';
 
 interface MainLayoutProps {
   title?: React.ReactNode;
@@ -80,23 +82,25 @@ const MainLayout: React.FC<MainLayoutProps> = ({
           className="lg:border-foreground/8 w-full overflow-auto lg:border-x lg:px-6"
           id="mainlayout"
         >
-          {title ? (
-            <div className="mb-2 flex items-center justify-between px-4 py-4">
-              <div className="text-foreground text-[33px] leading-tight font-bold tracking-[-0.6px]">
-                {title}
+          <ScreenTransition>
+            {title ? (
+              <div className="mb-2 flex items-center justify-between px-4 py-4">
+                <div className="text-foreground text-[33px] leading-tight font-bold tracking-[-0.6px]">
+                  {title}
+                </div>
+                {actions}
               </div>
-              {actions}
+            ) : null}
+            <div className="px-4">
+              {loading ? (
+                <div className="mt-10 flex justify-center">
+                  <LoadingSpinner className="text-primary" />
+                </div>
+              ) : (
+                children
+              )}
             </div>
-          ) : null}
-          <div className="px-4">
-            {loading ? (
-              <div className="mt-10 flex justify-center">
-                <LoadingSpinner className="text-primary" />
-              </div>
-            ) : (
-              children
-            )}
-          </div>
+          </ScreenTransition>
           {!hideAppBar && <div className="h-28 lg:h-0" />}
         </div>
       </div>
