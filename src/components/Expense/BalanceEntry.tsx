@@ -23,12 +23,15 @@ export const BalanceEntry: React.FC<{
   }, []);
 
   return (
-    <Link className="flex items-center justify-between py-3.5" href={`${currentRoute}/${id}`}>
-      <div className="flex min-w-0 items-center gap-3">
-        <EntityAvatar entity={entity} size={35} />
-        <div className="text-foreground truncate">{displayName(entity)}</div>
+    <Link
+      className="border-foreground/8 flex items-center gap-3.5 border-b py-[15px] active:opacity-55"
+      href={`${currentRoute}/${id}`}
+    >
+      <EntityAvatar entity={entity} size={42} />
+      <div className="text-foreground min-w-0 flex-1 truncate text-[16px] font-medium">
+        {displayName(entity)}
       </div>
-      <div className="text-right" onClick={stopPropagation}>
+      <div className="shrink-0 text-right" onClick={stopPropagation}>
         <ConvertibleBalance withText balances={balances} entityId={id} />
       </div>
     </Link>

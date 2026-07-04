@@ -165,7 +165,15 @@ export const ConvertibleBalance: React.FC<ConvertibleBalanceProps> = ({
   }, [shouldShowAll, balances, ratesQuery, selectedCurrency, t, setSelectedCurrency]);
 
   if (0 === balances.length) {
-    return <AmountDisplay className={className} amount={0n} currency="USD" />;
+    return <AmountDisplay withText={withText} className={className} amount={0n} currency="USD" />;
+  }
+
+  if (withText && balances.length > 1) {
+    return (
+      <span className="flex items-center gap-1">
+        <BalanceStackDisplay className={className} balances={balances} />
+      </span>
+    );
   }
 
   // If only one currency, no conversion needed, unless different preference exists
@@ -257,6 +265,35 @@ export const ConvertibleBalance: React.FC<ConvertibleBalanceProps> = ({
   );
 };
 
+const BalanceStackDisplay: React.FC<{
+  className?: string;
+  balances: { currency: string; amount: bigint }[];
+}> = ({ className = '', balances }) => {
+  const { getCurrencyHelpersCached } = useTranslationWithUtils();
+  const [primary, ...secondary] = balances;
+
+  if (!primary) {
+    return null;
+  }
+
+  return (
+    <div className="text-right">
+      <AmountDisplay
+        className={className}
+        amount={primary.amount}
+        currency={primary.currency}
+        withText
+      />
+      {secondary.map((balance) => (
+        <div key={balance.currency} className="text-foreground/40 mt-0.5 text-[12px] tabular-nums">
+          {balance.amount > 0n ? '+' : ''}
+          {getCurrencyHelpersCached(balance.currency).toUIString(balance.amount)}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const AmountDisplay: React.FC<{
   className?: string;
   amount: bigint;
@@ -267,27 +304,37 @@ const AmountDisplay: React.FC<{
   const { t, getCurrencyHelpersCached } = useTranslationWithUtils();
 
   if (amount === 0n) {
-    return <span className={cn('text-gray-500', className)}>{t('ui.settled_up')}</span>;
+    return (
+      <span className={cn('text-foreground/40 text-[11px]', className)}>{t('ui.settled_up')}</span>
+    );
   }
 
   const isPositive = amount > 0n;
-  return (
-    <div>
-      {withText && (
-        <div
+
+  if (withText) {
+    return (
+      <div className="text-right">
+        <div className="text-foreground/40 mb-px text-[11px]">
+          {t('actors.you')} {t(`ui.expense.you.${isPositive ? 'lent' : 'owe'}`)}
+        </div>
+        <span
           className={cn(
-            'text-right text-xs',
+            'text-[15.5px] font-semibold tabular-nums',
             isPositive ? 'text-positive' : 'text-negative',
             className,
           )}
         >
-          {t('actors.you')} {t(`ui.expense.you.${isPositive ? 'lent' : 'owe'}`)}
-        </div>
-      )}
-      <span className={cn(isPositive ? 'text-positive' : 'text-negative', className)}>
-        {getCurrencyHelpersCached(currency).toUIString(amount)}
-        {hasMore && `+`}
-      </span>
-    </div>
+          {getCurrencyHelpersCached(currency).toUIString(amount)}
+          {hasMore && '+'}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <span className={cn(isPositive ? 'text-positive' : 'text-negative', className)}>
+      {getCurrencyHelpersCached(currency).toUIString(amount)}
+      {hasMore && '+'}
+    </span>
   );
 };
