@@ -1,7 +1,7 @@
 // copied from: https://github.com/vpfaiz/cron-builder-ui/
 import { format } from 'date-fns';
 import { type TFunction, useTranslation } from 'next-i18next';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useIntlCronParser } from '~/hooks/useIntlCronParser';
 
@@ -197,6 +197,12 @@ export function CronBuilder({ onChange, value, className }: CronBuilderProps) {
   const [custom, setCustom] = useState<string>(initialParsed.values.custom || defaultSchedule);
   const [cronExpression, setCronExpression] = useState(defaultSchedule);
 
+  // Tracks the last value this component itself emitted via `onChange`, so the
+  // resync effect below can tell "the parent echoed our own change back down"
+  // apart from "the parent changed `value` out from under us" (e.g. a preset
+  // click elsewhere) and only reset internal state for the latter.
+  const lastEmittedRef = useRef(value);
+
   const { cronParser } = useIntlCronParser();
 
   function loadDefaults() {
@@ -245,12 +251,38 @@ export function CronBuilder({ onChange, value, className }: CronBuilderProps) {
 
     if (getCronText(cronParser, expression).status) {
       setCronExpression(expression);
+      lastEmittedRef.current = expression;
       onChange(expression);
     } else {
       setCronExpression('');
+      lastEmittedRef.current = '';
       onChange('');
     }
   }, [scheduleType, minutes, hours, daysOfMonth, months, daysOfWeek, custom]);
+
+  // Resync internal state when `value` changes for a reason OTHER than this
+  // component's own last `onChange` emission (e.g. a preset picked outside
+  // this component). Skipping the self-echo case is what lets hand-typing a
+  // custom cron survive the round-trip through the parent: every keystroke
+  // emits a possibly-invalid intermediate value, the parent stores it and
+  // passes it back down as `value`, and without this guard that echo used to
+  // be indistinguishable from an external change and would reset `custom`.
+  useEffect(() => {
+    if (value === lastEmittedRef.current) {
+      return;
+    }
+    lastEmittedRef.current = value;
+    const parsed = parseCronExpression(value);
+    setScheduleType(parsed.type);
+    setMinutes(parsed.values.minutes || [0]);
+    setHours(parsed.values.hours || [0]);
+    setDaysOfMonth(parsed.values.daysOfMonth || [1]);
+    setMonths(parsed.values.months || [1]);
+    setDaysOfWeek(parsed.values.daysOfWeek || [0]);
+    setCustom(parsed.values.custom || value);
+    setCronExpression(value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   const handleMonthToggle = useCallback((monthIndex: number | string) => {
     const monthNum = (typeof monthIndex === 'number' ? monthIndex : parseInt(monthIndex, 10)) + 1;

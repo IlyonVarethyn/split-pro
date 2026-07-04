@@ -379,6 +379,7 @@
     "last_day": "Ultimo giorno",
     "months": "Mesi",
     "never": "Nessuna pianificazione configurata",
+    "next_occurrence": "Prossima occorrenza: {{date}}",
     "recurring": "Ricorrente",
     "schedule_type": {
       "custom": "Personalizzata",

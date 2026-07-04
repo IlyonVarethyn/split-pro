@@ -406,6 +406,7 @@
     "months": "Months",
     "last_day": "Last day",
     "never": "No schedule configured",
+    "next_occurrence": "Next occurrence: {{date}}",
     "empty": "No recurring expenses yet",
     "recurring": "Recurring",
     "expense_for_the_amount_of": "Expense {{name}} for the amount of {{amount}} {{currency}}",

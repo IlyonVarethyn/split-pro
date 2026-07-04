@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react';
 import React, { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -9,7 +10,6 @@ import { MAX_RATE_PRECISION, currencyConversion, getRatePrecision } from '~/util
 
 import { CurrencyPicker } from '../AddExpense/CurrencyPicker';
 import { DateSelector } from '../AddExpense/DateSelector';
-import { Button } from '../ui/button';
 import { CurrencyInput } from '../ui/currency-input';
 import { AppDrawer } from '../ui/drawer';
 import { Input } from '../ui/input';
@@ -189,50 +189,37 @@ export const CurrencyConversion: React.FC<{
       }
     >
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 sm:mt-4">
-        <div className="grid gap-3 sm:grid-cols-2">
-          <div className="bg-foreground/5 rounded-[18px] px-[18px] py-4">
-            <Label className="text-muted-foreground text-[11px] font-semibold tracking-[.14em] uppercase">
+        <div className="bg-foreground/5 flex items-end gap-3 rounded-[16px] px-[18px] py-4">
+          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+            <span className="text-foreground/40 text-[11.5px] font-semibold tracking-[.06em] uppercase">
               {t('ui.expense.from')}
-            </Label>
-            <div className="mt-3 flex items-end gap-3">
-              <Button
-                variant="outline"
-                className="bg-background/70 h-10 rounded-full px-4 text-[13px] font-semibold"
-                disabled
-              >
-                {currency}
-              </Button>
+            </span>
+            <div className="flex min-w-0 items-center gap-2">
               <CurrencyInput
                 aria-label="Amount"
                 currency={currency}
                 strValue={amountStr}
                 hideSymbol
                 onValueChange={onUpdateAmount}
-                className="border-foreground/15 h-11 rounded-none border-0 border-b bg-transparent px-0 text-right text-[21px] font-bold tabular-nums shadow-none focus-visible:ring-0"
+                className="h-9 min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left text-[21px] font-bold tabular-nums shadow-none focus-visible:ring-0"
               />
+              <span className="text-foreground/45 shrink-0 text-[13px] font-semibold">
+                {currency}
+              </span>
             </div>
           </div>
 
-          <div className="bg-foreground/5 rounded-[18px] px-[18px] py-4">
-            <Label className="text-muted-foreground text-[11px] font-semibold tracking-[.14em] uppercase">
+          <ArrowRight
+            className="text-foreground/50 mb-2 h-[18px] w-[18px] shrink-0"
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
+
+          <div className="flex min-w-0 flex-1 flex-col items-end gap-1.5">
+            <span className="text-foreground/40 text-[11.5px] font-semibold tracking-[.06em] uppercase">
               {t('ui.expense.to')}
-            </Label>
-            <div className="mt-3 flex items-end gap-3">
-              {editingTargetCurrency ? (
-                <Button
-                  variant="outline"
-                  className="bg-background/70 h-10 rounded-full px-4 text-[13px] font-semibold"
-                  disabled
-                >
-                  {editingTargetCurrency}
-                </Button>
-              ) : (
-                <CurrencyPicker
-                  className="mx-0"
-                  currentCurrency={targetCurrency}
-                  onCurrencyPick={onChangeTargetCurrency}
-                />
-              )}
+            </span>
+            <div className="flex w-full min-w-0 items-center justify-end gap-2">
               <CurrencyInput
                 aria-label="Converted Amount"
                 currency={targetCurrency}
@@ -240,8 +227,19 @@ export const CurrencyConversion: React.FC<{
                 onValueChange={onChangeTargetAmount}
                 hideSymbol
                 disabled={getCurrencyRate.isPending || currency === targetCurrency}
-                className="border-foreground/15 h-11 rounded-none border-0 border-b bg-transparent px-0 text-right text-[21px] font-bold tabular-nums shadow-none focus-visible:ring-0"
+                className="text-primary h-9 min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-right text-[21px] font-bold tabular-nums shadow-none focus-visible:ring-0"
               />
+              {editingTargetCurrency ? (
+                <span className="text-foreground/45 shrink-0 text-[13px] font-semibold">
+                  {editingTargetCurrency}
+                </span>
+              ) : (
+                <CurrencyPicker
+                  className="mx-0 shrink-0"
+                  currentCurrency={targetCurrency}
+                  onCurrencyPick={onChangeTargetCurrency}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -249,7 +247,7 @@ export const CurrencyConversion: React.FC<{
         <div className="bg-foreground/5 rounded-[18px] px-[18px] py-4">
           <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
             <div className="flex flex-col gap-2">
-              <Label className="text-muted-foreground text-[11px] font-semibold tracking-[.14em] uppercase">
+              <Label className="text-foreground/45 text-[13.5px] font-medium">
                 {t('currency_conversion.rate')}
               </Label>
               <Input
@@ -266,7 +264,7 @@ export const CurrencyConversion: React.FC<{
             </div>
 
             <div className="flex flex-col gap-2 sm:items-end">
-              <Label className="text-muted-foreground text-[11px] font-semibold tracking-[.14em] uppercase">
+              <Label className="text-foreground/45 text-[13.5px] font-medium">
                 {t('actions.fetch')} {t('ui.expense.from')}
               </Label>
               <DateSelector
@@ -280,7 +278,7 @@ export const CurrencyConversion: React.FC<{
             </div>
           </div>
 
-          <div className="text-muted-foreground mt-3 min-h-9 text-[12.5px] leading-5">
+          <div className="text-foreground/35 mt-3 min-h-9 text-[12px] leading-5">
             {currency !== targetCurrency && getCurrencyRate.isPending && (
               <span>{t('currency_conversion.fetching_rate')}</span>
             )}
