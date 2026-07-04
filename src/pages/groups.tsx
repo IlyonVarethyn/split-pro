@@ -1,8 +1,7 @@
-import { PlusIcon } from '@heroicons/react/24/solid';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'next-i18next';
 import Head from 'next/head';
 import { useEffect, useMemo } from 'react';
-import { BalanceEntry } from '~/components/Expense/BalanceEntry';
 import { CreateGroup } from '~/components/group/CreateGroup';
 import { GroupCard } from '~/components/group/GroupCard';
 import MainLayout from '~/components/Layout/MainLayout';
@@ -43,7 +42,12 @@ const BalancePage: NextPageWithUser = () => {
   const actions = useMemo(
     () => (
       <CreateGroup>
-        <PlusIcon className="text-primary h-6 w-6" />
+        <button
+          type="button"
+          className="bg-primary/14 text-primary flex size-[38px] items-center justify-center rounded-full transition-transform active:scale-90"
+        >
+          <Plus className="size-5" strokeWidth={2.2} />
+        </button>
       </CreateGroup>
     ),
     [],
@@ -55,12 +59,12 @@ const BalancePage: NextPageWithUser = () => {
         <title>{t('navigation.groups')}</title>
       </Head>
       <MainLayout title={t('navigation.groups')} actions={actions} loading={groupQuery.isPending}>
-        <div className="mt-7 flex flex-col gap-4 pb-36">
+        <div className="mt-7 flex flex-col pb-36">
           {0 === groupQuery.data?.length ? (
             <div className="mt-[30vh] flex flex-col items-center justify-center gap-20">
               <CreateGroup>
                 <Button>
-                  <PlusIcon className="mr-2 h-4 w-4" />
+                  <Plus className="mr-2 h-4 w-4" />
                   {t('actions.create')}
                 </Button>
               </CreateGroup>
@@ -80,15 +84,21 @@ const BalancePage: NextPageWithUser = () => {
 
               {/* Archived Groups Accordion */}
               {archivedGroupQuery.data && archivedGroupQuery.data.length > 0 && (
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="archived-groups">
-                    <AccordionTrigger className="text-left text-sm text-gray-400">
+                <Accordion type="single" collapsible className="mt-5 w-full">
+                  <AccordionItem value="archived-groups" className="border-none">
+                    <AccordionTrigger className="text-foreground/45 py-3 text-left text-[13px] font-medium hover:no-underline [&>svg]:transition-transform [&>svg]:duration-250">
                       {t('group_details.group_info.archived')} ({archivedGroupQuery.data.length})
                     </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="divide-foreground/8 mt-7 flex flex-col divide-y">
+                    <AccordionContent className="pb-0 data-[state=closed]:animate-none data-[state=open]:animate-none">
+                      <div className="flex flex-col opacity-60">
                         {archivedGroupQuery.data.map((g) => (
-                          <BalanceEntry key={g.id} id={g.id} entity={g} />
+                          <GroupCard
+                            key={g.id}
+                            id={g.id}
+                            entity={g}
+                            balances={transformBalances(g.balances)}
+                            memberCount={g.memberCount}
+                          />
                         ))}
                       </div>
                     </AccordionContent>

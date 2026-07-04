@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { ConvertibleBalance } from '~/components/Expense/ConvertibleBalance';
-import { EntityAvatar } from '~/components/ui/avatar';
+import { flatAvatarColor } from '~/components/ui/avatar';
 
 export const GroupCard: React.FC<{
   entity: { name?: string | null; image?: string | null; email?: string | null };
@@ -15,21 +15,37 @@ export const GroupCard: React.FC<{
   const router = useRouter();
   const currentRoute = router.pathname;
 
+  const name = entity.name ?? '';
+  const initials =
+    name
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part.charAt(0).toUpperCase())
+      .join('') || '?';
+
   return (
     <Link
-      className="bg-foreground/5 flex items-center justify-between gap-3 rounded-[0.875rem] px-4 py-3.5"
+      className="border-foreground/8 flex items-center justify-between gap-3 border-b py-4 active:opacity-55"
       href={`${currentRoute}/${id}`}
     >
       <div className="flex min-w-0 items-center gap-3">
-        <EntityAvatar entity={entity} size={44} />
+        <div
+          className="flex size-12 shrink-0 items-center justify-center rounded-[15px] text-[15px] font-bold"
+          style={{ backgroundColor: flatAvatarColor(name), color: '#0a0c0d' }}
+        >
+          {initials}
+        </div>
         <div className="min-w-0">
-          <div className="text-foreground truncate text-base font-medium">{entity.name}</div>
-          <div className="text-foreground/40 text-xs">
+          <div className="text-foreground truncate text-[16.5px] font-semibold">{name}</div>
+          <div className="text-foreground/40 mt-0.5 text-[12.5px]">
             {t('group_details.member_count', { count: memberCount })}
           </div>
         </div>
       </div>
-      <ConvertibleBalance withText balances={balances ?? []} entityId={id} />
+      <div className="shrink-0 text-right text-[16px] font-semibold tabular-nums">
+        <ConvertibleBalance balances={balances ?? []} entityId={id} entityType="group" />
+      </div>
     </Link>
   );
 };

@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import Avatar from 'boring-avatars';
 import { useRouter } from 'next/router';
 import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -73,7 +72,7 @@ export const CreateGroup: React.FC<{ children: React.ReactNode }> = ({ children 
         <FormControl>
           <Input
             placeholder={t('group_details.create_group.group_name_placeholder')}
-            className="w-full py-2 text-lg"
+            className="border-foreground/18 focus-visible:border-primary w-full rounded-none border-0 border-b-[1.5px] bg-transparent px-0 text-[16px] font-medium shadow-none focus-visible:ring-0"
             {...field}
           />
         </FormControl>
@@ -81,11 +80,6 @@ export const CreateGroup: React.FC<{ children: React.ReactNode }> = ({ children 
       </FormItem>
     ),
     [t],
-  );
-
-  const avatarColors = React.useMemo(
-    () => ['#80C7B7', '#D9C27E', '#F4B088', '#FFA5AA', '#9D9DD3'],
-    [],
   );
 
   return (
@@ -98,21 +92,15 @@ export const CreateGroup: React.FC<{ children: React.ReactNode }> = ({ children 
         leftActionOnClick={handleLeftActionClick}
         title={t('group_details.create_group.title')}
         className="h-[70vh]"
-        actionTitle={t('actions.submit')}
+        actionTitle={t('actions.create')}
         actionOnClick={handleActionClick}
       >
         <div className="w-full">
           <Form {...groupForm}>
-            <form
-              onSubmit={groupForm.handleSubmit(onGroupSubmit)}
-              className="mt-4 flex w-full items-start gap-4"
-            >
-              <Avatar
-                size={50}
-                name={groupForm.watch('name')}
-                variant="bauhaus"
-                colors={avatarColors}
-              />
+            <form onSubmit={groupForm.handleSubmit(onGroupSubmit)} className="mt-4 w-full">
+              <label className="text-foreground/40 mb-1.5 block text-[11px] tracking-[.05em] uppercase">
+                {t('group_details.create_group.group_name_placeholder')}
+              </label>
               <FormField control={groupForm.control} name="name" render={field} />
             </form>
           </Form>
