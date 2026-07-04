@@ -1096,7 +1096,7 @@ describe('useAddExpenseStore sign preservation on edit (#658)', () => {
     actions.setAmountStr(toUIString(-20000n, true, true));
 
     const state = useAddExpenseStore.getState();
-    expect(state.amountStr).toBe('-200');
+    expect(state.amountStr).toBe('−200');
     expect(state.isNegative).toBe(true);
     expect(state.amount).toBe(20000n);
   });

@@ -38,19 +38,19 @@ describe('getCurrencyHelpers', () => {
 
         it.each([
           [12345n, '$123.45'],
-          [-12345n, '-$123.45'],
-          [-50n, '-$0.5'],
+          [-12345n, '−$123.45'],
+          [-50n, '−$0.5'],
           [-0n, '$0'],
           [99999999999999999999999999999n, '$999,999,999,999,999,999,999,999,999.99'],
-          [-99999999999999999999999999999n, '-$999,999,999,999,999,999,999,999,999.99'],
+          [-99999999999999999999999999999n, '−$999,999,999,999,999,999,999,999,999.99'],
         ])('should format %p as %p with signed flag', (value, expected) => {
           expect(toUIString(value, true)).toBe(expected);
         });
 
         it.each([
           [12345n, '123.45'],
-          [-12345n, '-123.45'],
-          [-50n, '-0.5'],
+          [-12345n, '−123.45'],
+          [-50n, '−0.5'],
           [-0n, '0'],
         ])('should format %p as %p with signed flag and hideSymbol', (value, expected) => {
           expect(toUIString(value, true, true)).toBe(expected);
@@ -212,6 +212,17 @@ describe('getCurrencyHelpers', () => {
       ['-123.45', '123.45'],
     ])('should drop the minus sign for %p without signed flag', (input, expected) => {
       expect(parseToCleanString(input)).toBe(expected);
+    });
+  });
+
+  describe('unicode minus sign', () => {
+    const { toUIString, toSafeBigInt } = getCurrencyHelpers({ locale: 'en-US', currency: 'USD' });
+    it('formats negative signed amounts with U+2212', () => {
+      expect(toUIString(-1234n, true)).toContain('−');
+      expect(toUIString(-1234n, true)).not.toContain('-');
+    });
+    it('parses U+2212 back to a negative bigint', () => {
+      expect(toSafeBigInt('−12.34', true)).toBe(-1234n);
     });
   });
 });

@@ -101,8 +101,8 @@ export const getCurrencyHelpers = ({
         hasDecimalSeparator = true;
         return;
       }
-      // When a user presses '-' sign, switch the sign of the number
-      if (letter === '-' && !hasNegativeSign) {
+      // When a user presses '-' or '−' sign, switch the sign of the number
+      if (('-' === letter || '−' === letter) && !hasNegativeSign) {
         hasNegativeSign = true;
       }
 
@@ -188,7 +188,7 @@ export const getCurrencyHelpers = ({
       return formatter.format(0);
     }
 
-    const sign = value.startsWith('-') && signed ? '-' : '';
+    const sign = value.startsWith('-') && signed ? '−' : '';
     const normalizedToMaxLength = normalizeToMaxLength(value);
     const bigintValue = parseToBigIntBeforeSubmit(normalizedToMaxLength);
     const parts = formatter.formatToParts(BigMath.abs(bigintValue) / decimalMultiplierN);
