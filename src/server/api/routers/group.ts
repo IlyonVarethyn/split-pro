@@ -133,6 +133,35 @@ export const groupRouter = createTRPCRouter({
       return group;
     }),
 
+  getGroupPreview: protectedProcedure
+    .input(z.object({ groupId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const group = await ctx.db.group.findUnique({
+        where: { publicId: input.groupId },
+        include: {
+          createdBy: true,
+          groupUsers: { include: { user: true } },
+        },
+      });
+
+      if (!group) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Group not found' });
+      }
+
+      return {
+        id: group.id,
+        name: group.name,
+        createdByName: group.createdBy.name,
+        members: group.groupUsers.map((gu) => ({
+          id: gu.user.id,
+          name: gu.user.name,
+          image: gu.user.image,
+          email: gu.user.email,
+        })),
+        isMember: group.groupUsers.some((gu) => gu.userId === ctx.session.user.id),
+      };
+    }),
+
   getGroupDetails: groupProcedure.query(async ({ input, ctx }) => {
     const group = await ctx.db.group.findUnique({
       where: {

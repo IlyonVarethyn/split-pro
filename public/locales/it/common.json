@@ -126,11 +126,18 @@
     "no_providers_instructions": "Si prega di configurare almeno un provider di autenticazione per accedere. Consulta le",
     "or": "oppure",
     "otp_sent": "Abbiamo inviato un'e-mail con l'OTP. Controllare la posta in arrivo e fare clic sul link contenuto nell'e-mail per accedere.",
+    "otp_sent_short": "Abbiamo inviato un codice a",
+    "privacy_link": "Informativa sulla privacy",
     "send_magic_link": "Invia link magico",
     "sending": "Invio in corso...",
     "setup_instructions": "istruzioni di configurazione Docker",
     "submit": "Invia",
-    "trouble_logging_in": "Problemi ad accedere? Contatta"
+    "tagline": "Dividi le spese con amici, senza pensieri",
+    "terms_link": "Termini di servizio",
+    "terms_note": "Continuando accetti i nostri",
+    "trouble_logging_in": "Problemi ad accedere? Contatta",
+    "use_another_email": "Usa un altro indirizzo",
+    "verify_email_title": "Controlla la tua email"
   },
   "bank_transactions": {
     "choose_bank_provider": "Scegli il fornitore bancario",
@@ -346,6 +353,7 @@
         "warning": "Attenzione: non usare \"Invia invito\" se l'email non è valida. Usa invece \"Aggiungi a Split Pro\". Il tuo account verrà bloccato se questa funzione viene utilizzata in modo improprio"
       },
       "copied": "Copiato",
+      "description": "Aggiungi i membri o condividi il link di invito per iniziare a dividere le spese.",
       "invite_link": "Condividi il link d'invito",
       "no_members": "Nessun membro nel gruppo ancora."
     },
@@ -360,6 +368,14 @@
     "in_splitpro": "in Splitpro",
     "join_to": "Unisciti a",
     "text": "Unisciti al gruppo e potrai aggiungere, gestire spese e tracciare i tuoi saldi"
+  },
+  "join_group": {
+    "invited_title": "Sei stato invitato in {{name}}",
+    "join": "Unisciti al gruppo",
+    "meta_one": "{{count}} partecipante · creato da {{creator}}",
+    "meta_other": "{{count}} partecipanti · creato da {{creator}}",
+    "not_now": "Non ora",
+    "open": "Apri il gruppo"
   },
   "balances": {
     "owe_in_currencies_one": "Devi a {{name}}",

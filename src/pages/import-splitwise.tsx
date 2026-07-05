@@ -1,11 +1,11 @@
-import { PaperClipIcon } from '@heroicons/react/24/solid';
-import { DownloadCloud } from 'lucide-react';
+import { DownloadCloud, UploadCloud } from 'lucide-react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'next-i18next';
+import { cn } from '~/lib/utils';
 import MainLayout from '~/components/Layout/MainLayout';
 import { Button } from '~/components/ui/button';
 import { Checkbox } from '~/components/ui/checkbox';
@@ -117,42 +117,82 @@ const ImportSpliwisePage: NextPageWithUser = () => {
             </Button>
           </div>
         </div>
-        <div className="mt-4 flex items-center gap-4">
-          <label
-            htmlFor="splitwise-json"
-            className="bg-foreground/8 w-full cursor-pointer rounded-[0.875rem]"
-          >
-            <div className="flex cursor-pointer px-3 py-[6px]">
-              <div className="flex items-center border-r pr-4">
-                <PaperClipIcon className="mr-2 h-4 w-4" />{' '}
-                <span className="hidden text-sm md:block">
-                  {t('account.import_from_splitwise_details.choose_file')}
-                </span>
-              </div>
-              <div className="pl-4 text-gray-400">
-                {uploadedFile
-                  ? uploadedFile.name
-                  : t('account.import_from_splitwise_details.no_file_chosen')}
-              </div>
+
+        <div className="mt-5 flex flex-col gap-2.5">
+          <div className="bg-foreground/5 flex items-center gap-3.5 rounded-[16px] px-[17px] py-[15px]">
+            <div
+              className={cn(
+                'flex size-6.5 shrink-0 items-center justify-center rounded-full text-[12.5px] font-bold',
+                uploadedFile
+                  ? 'bg-foreground/12 text-foreground/55'
+                  : 'bg-primary text-primary-foreground',
+              )}
+            >
+              1
             </div>
-            <Input
-              onChange={handleFileChange}
-              id="splitwise-json"
-              type="file"
-              accept=".json"
-              className="hidden"
-            />
-          </label>
-          <Button
-            onClick={onImport}
-            disabled={!uploadedFile || importMutation.isPending}
-            className="w-[100px]"
-            size="sm"
-          >
-            {importMutation.isPending ? <LoadingSpinner /> : t('actions.import')}
-          </Button>
+            <div className="min-w-0 flex-1">
+              <div
+                className={cn('text-sm', uploadedFile ? 'text-foreground/55' : 'text-foreground')}
+              >
+                {t('account.import_from_splitwise_details.follow_to_export_splitwise_data')}
+              </div>
+              {!uploadedFile && (
+                <Link
+                  href="https://export-splitwise.vercel.app/"
+                  target="_blank"
+                  className="text-primary mt-1.5 inline-flex items-center gap-1.5 text-[13px] font-semibold underline-offset-2 active:opacity-60"
+                >
+                  <DownloadCloud className="h-3.5 w-3.5" strokeWidth={1.8} />
+                  {t('account.import_from_splitwise_details.export_splitwise_data_button')}
+                </Link>
+              )}
+            </div>
+          </div>
+          <div className="bg-foreground/5 flex items-center gap-3.5 rounded-[16px] px-[17px] py-[15px]">
+            <div
+              className={cn(
+                'flex size-6.5 shrink-0 items-center justify-center rounded-full text-[12.5px] font-bold',
+                uploadedFile
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-foreground/12 text-foreground/55',
+              )}
+            >
+              2
+            </div>
+            <div className={cn('text-sm', uploadedFile ? 'text-foreground' : 'text-foreground/55')}>
+              {t('account.import_from_splitwise_details.choose_file')}
+            </div>
+          </div>
         </div>
-        <div className="mt-4 text-sm text-gray-400">
+
+        <label
+          htmlFor="splitwise-json"
+          className="border-foreground/18 mt-4 flex cursor-pointer flex-col items-center gap-2 rounded-[16px] border-[1.5px] border-dashed py-7"
+        >
+          <UploadCloud className="text-foreground/45 h-6 w-6" strokeWidth={1.8} />
+          <p className="text-foreground/50 text-[13.5px]">
+            {uploadedFile
+              ? uploadedFile.name
+              : t('account.import_from_splitwise_details.no_file_chosen')}
+          </p>
+          <Input
+            onChange={handleFileChange}
+            id="splitwise-json"
+            type="file"
+            accept=".json"
+            className="hidden"
+          />
+        </label>
+
+        <Button
+          onClick={onImport}
+          disabled={!uploadedFile || importMutation.isPending}
+          className="bg-primary text-primary-foreground mt-4 w-full rounded-[14px] py-3.5 text-[15px] font-bold active:scale-[.98] disabled:opacity-40"
+        >
+          {importMutation.isPending ? <LoadingSpinner /> : t('actions.import')}
+        </Button>
+
+        <div className="text-foreground/45 mt-4 text-sm">
           {t('account.import_from_splitwise_details.note')}
         </div>
 
@@ -230,17 +270,7 @@ const ImportSpliwisePage: NextPageWithUser = () => {
               </div>
             ) : null}
           </>
-        ) : (
-          <div className="mt-20 flex flex-col items-center justify-center gap-4">
-            {t('account.import_from_splitwise_details.follow_to_export_splitwise_data')}
-            <Link href="https://export-splitwise.vercel.app/" target="_blank">
-              <Button>
-                <DownloadCloud className="mr-2 text-gray-800" />
-                {t('account.import_from_splitwise_details.export_splitwise_data_button')}
-              </Button>
-            </Link>
-          </div>
-        )}
+        ) : null}
       </MainLayout>
     </>
   );

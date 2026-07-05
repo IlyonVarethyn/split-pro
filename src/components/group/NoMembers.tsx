@@ -1,9 +1,7 @@
 import { type Group, type GroupUser } from '@prisma/client';
-import { Share, UserPlus } from 'lucide-react';
+import { Users } from 'lucide-react';
 import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
-
-import { Button } from '~/components/ui/button';
 
 import AddMembers from './AddMembers';
 
@@ -27,30 +25,31 @@ const NoMembers: React.FC<NoMembersProps> = ({ group, enableSendingInvites }) =>
   }
 
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-4">
-      <p className="mb-4 text-center text-gray-500">{t('group_details.no_members.no_members')}</p>
-
-      <AddMembers group={group} enableSendingInvites={enableSendingInvites}>
-        <Button className="w-[200px]" disabled={isArchived}>
-          <UserPlus className="text-primary-foreground" /> {t('group_details.add_members')}
-        </Button>
-      </AddMembers>
-
-      <p className="text-gray-400">{t('ui.or')}</p>
-      <Button
-        className="flex w-[200px] items-center gap-2"
-        onClick={copyToClipboard}
-        disabled={isArchived}
-      >
-        {!isCopied ? (
-          <>
-            <Share className="h-5 w-5" />
-            {t('group_details.no_members.invite_link')}
-          </>
-        ) : (
-          t('group_details.copied')
-        )}
-      </Button>
+    <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
+      <div className="bg-foreground/5 flex size-16 shrink-0 items-center justify-center rounded-full">
+        <Users className="text-foreground/45 h-6.5 w-6.5" strokeWidth={1.8} />
+      </div>
+      <p className="text-[16.5px] font-semibold">{t('group_details.no_members.no_members')}</p>
+      <p className="text-foreground/45 max-w-[240px] text-[13.5px] leading-snug">
+        {t('group_details.no_members.description')}
+      </p>
+      <div className="mt-2.5 flex gap-2.5">
+        <AddMembers group={group} enableSendingInvites={enableSendingInvites}>
+          <button
+            disabled={isArchived}
+            className="bg-primary text-primary-foreground rounded-full px-[18px] py-[11px] text-[13.5px] font-bold active:scale-[.96] disabled:opacity-40"
+          >
+            {t('group_details.add_members')}
+          </button>
+        </AddMembers>
+        <button
+          onClick={copyToClipboard}
+          disabled={isArchived}
+          className="bg-foreground/8 rounded-full px-[18px] py-[11px] text-[13.5px] font-semibold active:scale-[.96] disabled:opacity-40"
+        >
+          {isCopied ? t('group_details.copied') : t('group_details.no_members.invite_link')}
+        </button>
+      </div>
     </div>
   );
 };

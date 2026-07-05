@@ -11,6 +11,7 @@ import {
 import { type GetServerSideProps, type NextPage } from 'next';
 import { type ClientSafeProvider, getProviders, signIn } from 'next-auth/react';
 import { type TFunction, useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -142,7 +143,7 @@ const Home: NextPage<{
         <FormControl>
           <Input
             placeholder={t('auth.email_placeholder')}
-            className="w-[300px] text-lg"
+            className="border-foreground/18 placeholder:text-foreground/40 focus-visible:border-primary w-[300px] rounded-none border-0 border-b-[1.5px] bg-transparent px-0 py-3 text-left text-base focus-visible:ring-0 focus-visible:ring-offset-0"
             type="email"
             {...field}
           />
@@ -162,50 +163,59 @@ const Home: NextPage<{
         feedbackEmail={feedbackEmail}
         email={emailForm.getValues().email}
         callbackUrl={callbackUrl}
+        onBack={() => setShowVerificationStep(false)}
       />
     );
   }
 
   return (
     <>
-      <main className="flex h-full flex-col justify-center lg:justify-normal">
-        <div className="flex flex-col items-center lg:mt-20">
-          <div className="mb-5 flex items-center gap-4">
-            <p className="text-primary text-3xl">{t('meta.application_name')}</p>
-          </div>
-          <div className="mb-10 flex items-center gap-4">
-            <LanguageSelector />
-          </div>
+      <main className="screen-enter-push flex h-full flex-col items-center px-6 pt-[110px] pb-14 text-center lg:justify-normal">
+        <div className="bg-primary text-primary-foreground flex size-14 shrink-0 items-center justify-center rounded-[16px] text-2xl font-bold">
+          S
+        </div>
+        <p className="mt-1.5 text-[26px] font-bold">{t('meta.application_name')}</p>
+        <p className="text-foreground/50 mt-1 max-w-[230px] text-[14.5px] leading-snug">
+          {t('auth.tagline')}
+        </p>
+        <div className="mt-3.5 flex items-center gap-4">
+          <LanguageSelector className="bg-foreground/6 text-foreground/60 h-auto rounded-full px-3.5 py-1.5 text-xs" />
+        </div>
 
-          {isLoadingProviders ? (
-            <div className="flex h-[200px] w-[300px] items-center justify-center">
-              <LoadingSpinner className="h-8 w-8" />
-            </div>
-          ) : (
-            <>
-              {providers.length === 0 ? (
-                <div className="text-muted-foreground flex w-[300px] flex-col items-center gap-4 text-center">
-                  <p className="text-lg font-semibold">{t('auth.no_providers_configured')}</p>
-                  <p className="text-sm">
-                    {t('auth.no_providers_instructions')}{' '}
-                    <a
-                      className="text-primary underline"
-                      href="https://github.com/oss-apps/split-pro/blob/main/docker/README.md"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {t('auth.setup_instructions')}
-                    </a>
-                    .
-                  </p>
-                </div>
-              ) : (
-                <>
+        {isLoadingProviders ? (
+          <div className="mt-10 flex h-[200px] w-[300px] items-center justify-center">
+            <LoadingSpinner className="h-8 w-8" />
+          </div>
+        ) : (
+          <div className="mt-8 flex w-full max-w-[300px] flex-col">
+            {providers.length === 0 ? (
+              <div className="text-foreground/50 flex flex-col items-center gap-4 text-center">
+                <p className="text-lg font-semibold">{t('auth.no_providers_configured')}</p>
+                <p className="text-sm">
+                  {t('auth.no_providers_instructions')}{' '}
+                  <a
+                    className="text-primary underline"
+                    href="https://github.com/oss-apps/split-pro/blob/main/docker/README.md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('auth.setup_instructions')}
+                  </a>
+                  .
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="flex flex-col gap-2.5">
                   {providers
                     .filter((provider) => 'email' !== provider.id)
                     .map((provider) => (
                       <Button
-                        className="mx-auto my-2 flex w-[300px] items-center gap-3 rounded-[0.875rem] bg-white text-black hover:bg-gray-100 focus:bg-gray-100"
+                        className={
+                          'google' === provider.id
+                            ? 'bg-foreground text-background w-full gap-3 rounded-[14px] py-3.5 text-[15px] font-bold active:scale-[.98]'
+                            : 'bg-foreground/8 text-foreground w-full gap-3 rounded-[14px] py-3.5 text-[15px] font-semibold active:scale-[.98]'
+                        }
                         onClick={handleProviderSignIn(provider.id)}
                         key={provider.id}
                       >
@@ -213,50 +223,55 @@ const Home: NextPage<{
                         {t('auth.continue_with', { provider: provider.name })}
                       </Button>
                     ))}
-                  {providers && 2 === providers.length && (
-                    <div className="mt-6 flex w-[300px] items-center justify-between gap-2">
-                      <p className="bg-background z-10 ml-[150px] -translate-x-1/2 px-4 text-sm">
-                        {t('ui.or')}
-                      </p>
-                      <div className="absolute h-px w-[300px] bg-linear-to-r from-zinc-800 via-zinc-300 to-zinc-800" />
-                    </div>
-                  )}
-                  {providers.find((provider) => 'email' === provider.id) ? (
-                    <>
-                      <Form {...emailForm}>
-                        <form
-                          onSubmit={emailForm.handleSubmit(onEmailSubmit)}
-                          className="mt-6 space-y-8"
-                        >
-                          <FormField control={emailForm.control} name="email" render={field} />
-                          <Button
-                            className="mt-6 w-[300px] rounded-[0.875rem] bg-white text-black hover:bg-gray-100 focus:bg-gray-100"
-                            type="submit"
-                            disabled={'sending' === emailStatus}
-                          >
-                            {'sending' === emailStatus
-                              ? t('auth.sending')
-                              : t('auth.send_magic_link')}
-                          </Button>
-                        </form>
-                      </Form>
-                    </>
-                  ) : null}
-                </>
-              )}
-              {feedbackEmail && (
-                <p className="text-muted-foreground mt-6 w-[300px] text-center text-sm">
-                  {t('auth.trouble_logging_in')}
-                  <br />
-                  {/* oxlint-disable-next-line next/no-html-link-for-pages */}
-                  <a className="underline" href={feedbackEmailLink}>
-                    {feedbackEmail ?? ''}
-                  </a>
+                </div>
+                {providers && 2 === providers.length && (
+                  <div className="my-1.5 flex items-center gap-3">
+                    <div className="bg-foreground/10 h-px flex-1" />
+                    <span className="text-foreground/35 text-[11.5px]">{t('ui.or')}</span>
+                    <div className="bg-foreground/10 h-px flex-1" />
+                  </div>
+                )}
+                {providers.find((provider) => 'email' === provider.id) ? (
+                  <Form {...emailForm}>
+                    <form
+                      onSubmit={emailForm.handleSubmit(onEmailSubmit)}
+                      className="flex flex-col gap-2.5"
+                    >
+                      <FormField control={emailForm.control} name="email" render={field} />
+                      <Button
+                        className="bg-primary/14 text-primary mt-1 w-full rounded-[14px] py-3.5 text-[15px] font-bold active:scale-[.98] disabled:opacity-40"
+                        type="submit"
+                        disabled={'sending' === emailStatus}
+                      >
+                        {'sending' === emailStatus ? t('auth.sending') : t('auth.send_magic_link')}
+                      </Button>
+                    </form>
+                  </Form>
+                ) : null}
+                <p className="text-foreground/30 mt-3.5 text-[11px] leading-snug">
+                  {t('auth.terms_note')}{' '}
+                  <Link href="/terms" className="underline">
+                    {t('auth.terms_link')}
+                  </Link>{' '}
+                  {t('ui.and')}{' '}
+                  <Link href="/privacy" className="underline">
+                    {t('auth.privacy_link')}
+                  </Link>
                 </p>
-              )}
-            </>
-          )}
-        </div>
+              </>
+            )}
+            {feedbackEmail && (
+              <p className="text-foreground/45 mt-6 text-center text-sm">
+                {t('auth.trouble_logging_in')}
+                <br />
+                {/* oxlint-disable-next-line next/no-html-link-for-pages */}
+                <a className="underline" href={feedbackEmailLink}>
+                  {feedbackEmail ?? ''}
+                </a>
+              </p>
+            )}
+          </div>
+        )}
       </main>
     </>
   );

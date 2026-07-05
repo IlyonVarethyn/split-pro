@@ -143,10 +143,17 @@
     "no_providers_configured": "No authentication providers configured",
     "no_providers_instructions": "Please configure at least one authentication provider to sign in. See the",
     "otp_sent": "We have sent an email with the OTP. Please check your inbox and click the link in the email to sign in.",
+    "otp_sent_short": "We sent a code to",
+    "privacy_link": "Privacy Policy",
     "send_magic_link": "Send magic link",
     "sending": "Sending...",
     "setup_instructions": "Docker setup instructions",
-    "trouble_logging_in": "Trouble logging in? Contact"
+    "tagline": "Split expenses with friends, stress-free",
+    "terms_link": "Terms of Service",
+    "terms_note": "By continuing you agree to our",
+    "trouble_logging_in": "Trouble logging in? Contact",
+    "use_another_email": "Use a different email",
+    "verify_email_title": "Check your email"
   },
   "currency_conversion": {
     "amount_to_receive": "Amount to receive",
@@ -366,6 +373,7 @@
         "title": "Add members",
         "warning": "Warning: Don't use send invite if it's invalid email. use add to Split Pro instead. Your account will be blocked if this feature is misused"
       },
+      "description": "Add members or share the invite link to start splitting expenses.",
       "invite_link": "Invite link",
       "no_members": "No members in the group yet."
     },
@@ -380,6 +388,14 @@
     "in_splitpro": "in Splitpro",
     "join_to": "Join to",
     "text": "Join to the group and you can add, manage expenses, and track your balances"
+  },
+  "join_group": {
+    "invited_title": "You've been invited to {{name}}",
+    "join": "Join group",
+    "meta_one": "{{count}} participant · created by {{creator}}",
+    "meta_other": "{{count}} participants · created by {{creator}}",
+    "not_now": "Not now",
+    "open": "Open group"
   },
   "meta": {
     "application_name": "SplitPro",

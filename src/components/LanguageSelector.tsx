@@ -46,12 +46,15 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ className = 
   );
 
   return (
-    <div className={cn('relative', className)}>
+    <div className="relative">
       <Button
         variant="ghost"
         size="sm"
         onClick={handleToggleOpen}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+        className={cn(
+          'flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',
+          className,
+        )}
       >
         <Globe className="h-4 w-4" />
         <span className="hidden sm:inline">{currentLanguage?.name}</span>
