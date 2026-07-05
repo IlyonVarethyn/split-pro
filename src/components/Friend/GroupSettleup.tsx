@@ -40,6 +40,13 @@ export const GroupSettleUp: React.FC<{
     return () => clearTimeout(timer);
   }, [showSuccess]);
 
+  const handleOpenChange = React.useCallback((o: boolean) => {
+    setOpen(o);
+    if (o) {
+      setShowSuccess(false);
+    }
+  }, []);
+
   const onCurrencyInputValueChange = React.useCallback(
     ({ strValue, bigIntValue }: { strValue?: string; bigIntValue?: bigint }) => {
       if (strValue !== undefined) {
@@ -97,7 +104,7 @@ export const GroupSettleUp: React.FC<{
     <AppDrawer
       trigger={children}
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={handleOpenChange}
       leftAction={showSuccess ? undefined : t('actions.back')}
       title={showSuccess ? undefined : t('ui.settlement')}
       actionTitle={showSuccess ? undefined : t('actions.save')}

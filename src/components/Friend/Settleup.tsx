@@ -45,6 +45,13 @@ export const SettleUp: React.FC<
     return () => clearTimeout(timer);
   }, [showSuccess]);
 
+  const handleOpenChange = React.useCallback((o: boolean) => {
+    setOpen(o);
+    if (o) {
+      setShowSuccess(false);
+    }
+  }, []);
+
   function onSelectBalance(balance: MinimalBalance) {
     setBalanceToSettle(balance);
     setAmount(BigMath.abs(balance.amount));
@@ -133,7 +140,7 @@ export const SettleUp: React.FC<
       trigger={children}
       disableTrigger={!balances.length}
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={handleOpenChange}
       leftAction={showSuccess ? undefined : t('actions.back')}
       title={showSuccess ? undefined : t('ui.settle_up_name')}
       className="h-[70vh]"
