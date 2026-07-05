@@ -165,6 +165,10 @@ const BalancePage: NextPageWithUser<{
             <p className="min-w-0 flex-1 truncate text-[21px] font-bold tracking-[-0.3px]">
               {groupDetailQuery.data?.name}
             </p>
+          </div>
+        }
+        actions={
+          <div className="flex gap-2">
             <AppDrawer
               title={t('group_details.group_statistics.title')}
               trigger={

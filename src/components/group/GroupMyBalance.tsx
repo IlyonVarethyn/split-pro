@@ -53,7 +53,7 @@ const GroupMyBalance: React.FC<GroupMyBalanceProps> = ({ userId, groupBalances =
         balances={cumulatedBalances}
         entityId={groupId}
         entityType="group"
-        className="text-[20px] font-bold"
+        className="text-[20px] font-bold tabular-nums"
       />
     </div>
   );
