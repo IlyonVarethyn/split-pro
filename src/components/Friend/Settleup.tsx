@@ -1,9 +1,9 @@
 import { SplitType, type User } from '@prisma/client';
-import { ArrowRightIcon } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { DEFAULT_CATEGORY } from '~/lib/category';
+import { cn } from '~/lib/utils';
 import { api } from '~/utils/api';
 import { BigMath } from '~/utils/numbers';
 
@@ -14,7 +14,7 @@ import { EntityAvatar } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { CurrencyInput } from '../ui/currency-input';
 import { AppDrawer } from '../ui/drawer';
-import { FriendBalance } from './FriendBalance';
+import { SettleSuccessOverlay } from './SettleSuccessOverlay';
 
 export const SettleUp: React.FC<
   React.PropsWithChildren<{
@@ -26,29 +26,24 @@ export const SettleUp: React.FC<
   const { data } = useSession();
   const currentUser = data?.user;
 
-  if (!currentUser) {
-    return null;
-  }
+  const [open, setOpen] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  if (!balances) {
-    return (
-      <Button size="sm" variant="outline" responsiveIcon disabled>
-        <span className="xs:inline hidden">{t('actions.settle_up')}</span>
-      </Button>
-    );
-  }
-
-  const [balanceToSettle, setBalanceToSettle] = useState<MinimalBalance | undefined>(
-    1 < balances.length ? undefined : balances[0],
-  );
-  const [amount, setAmount] = useState<bigint>(
-    1 < balances.length ? 0n : BigMath.abs(balances[0]?.amount ?? 0n),
-  );
+  const [balanceToSettle, setBalanceToSettle] = useState<MinimalBalance | undefined>(balances?.[0]);
+  const [amount, setAmount] = useState<bigint>(BigMath.abs(balances?.[0]?.amount ?? 0n));
   const [amountStr, setAmountStr] = useState<string>(
     getCurrencyHelpersCached(balanceToSettle?.currency ?? '').toUIString(amount),
   );
 
   const isCurrentUserPaying = 0 > (balanceToSettle?.amount ?? 0);
+
+  useEffect(() => {
+    if (!showSuccess) {
+      return;
+    }
+    const timer = setTimeout(() => setOpen(false), 1150);
+    return () => clearTimeout(timer);
+  }, [showSuccess]);
 
   function onSelectBalance(balance: MinimalBalance) {
     setBalanceToSettle(balance);
@@ -90,6 +85,7 @@ export const SettleUp: React.FC<
         onSuccess: () => {
           utils.user.invalidate().catch(console.error);
           utils.expense.invalidate().catch(console.error);
+          setShowSuccess(true);
         },
         onError: (error) => {
           console.error('Error while saving expense:', error);
@@ -120,61 +116,104 @@ export const SettleUp: React.FC<
     [],
   );
 
-  const onBackClick = React.useCallback(() => {
-    if (balanceToSettle) {
-      setBalanceToSettle(undefined);
-    }
-  }, [balanceToSettle]);
+  if (!currentUser) {
+    return null;
+  }
+
+  if (!balances) {
+    return (
+      <Button size="sm" variant="outline" responsiveIcon disabled>
+        <span className="xs:inline hidden">{t('actions.settle_up')}</span>
+      </Button>
+    );
+  }
 
   return (
     <AppDrawer
       trigger={children}
-      disableTrigger={!balances?.length}
-      leftAction={t('actions.back')}
-      leftActionOnClick={onBackClick}
-      shouldCloseOnLeftAction={false}
-      title={balanceToSettle ? t('ui.settle_up_name') : t('ui.select_balance')}
+      disableTrigger={!balances.length}
+      open={open}
+      onOpenChange={setOpen}
+      leftAction={showSuccess ? undefined : t('actions.back')}
+      title={showSuccess ? undefined : t('ui.settle_up_name')}
       className="h-[70vh]"
-      actionTitle={t('actions.save')}
+      actionTitle={showSuccess ? undefined : t('actions.save')}
       actionDisabled={!balanceToSettle || !amount}
       actionOnClick={saveExpense}
-      shouldCloseOnAction
+      shouldCloseOnAction={false}
     >
-      {!balanceToSettle ? (
-        <div className="divide-foreground/8 divide-y">
-          {balances?.map((b) => (
-            <div
-              key={`${b.friendId}-${b.currency}-${b.groupId ?? 'null'}`}
-              onClick={() => onSelectBalance(b)}
-              className="cursor-pointer py-3.5"
-            >
-              <FriendBalance user={friend} balance={b} groupName={b.groupName} />
-            </div>
-          ))}
-        </div>
+      {showSuccess ? (
+        <SettleSuccessOverlay
+          message={t('settle_up.settled_with', { name: displayName(friend) })}
+        />
       ) : (
-        <div className="mt-10 flex flex-col items-center gap-6">
-          <div className="flex flex-col items-center">
-            <div className="flex items-center gap-5">
-              <EntityAvatar entity={isCurrentUserPaying ? currentUser : friend} />
-              <ArrowRightIcon className="h-6 w-6 text-gray-600" />
-              <EntityAvatar entity={isCurrentUserPaying ? friend : currentUser} />
-            </div>
-            <p className="mt-2 text-center text-sm text-gray-400">
+        <div className="flex flex-col items-center gap-6 pt-4">
+          <div className="flex flex-col items-center gap-[9px] pb-1">
+            <EntityAvatar entity={friend} size={56} />
+            <p className="text-foreground/45 text-center text-[13px]">
               {isCurrentUserPaying
                 ? `${t('actors.you')} ${t('ui.expense.you.pay')} ${displayName(friend)}`
                 : `${displayName(friend)} ${t('ui.expense.user.pay')} ${t('actors.you')}`}
             </p>
-            {balanceToSettle.groupName ? (
-              <p className="mt-1 text-center text-xs text-gray-500">{balanceToSettle.groupName}</p>
+            {balanceToSettle?.groupName ? (
+              <p className="text-foreground/35 text-center text-[11.5px]">
+                {balanceToSettle.groupName}
+              </p>
             ) : null}
+            <CurrencyInput
+              currency={balanceToSettle?.currency ?? ''}
+              strValue={amountStr}
+              disabled={!balanceToSettle}
+              className={cn(
+                'h-auto w-auto border-0 bg-transparent p-0 text-center text-[40px] font-bold tracking-[-0.5px] tabular-nums shadow-none focus-visible:ring-0',
+                isCurrentUserPaying ? 'text-negative' : 'text-positive',
+              )}
+              onValueChange={onCurrencyInputValueChange}
+            />
           </div>
-          <CurrencyInput
-            currency={balanceToSettle.currency}
-            strValue={amountStr}
-            className="mx-auto mt-4 w-[150px] text-center text-lg"
-            onValueChange={onCurrencyInputValueChange}
-          />
+          {1 < balances.length ? (
+            <div className="w-full">
+              <div className="text-foreground/40 mb-2.5 text-[11.5px] tracking-[.06em] uppercase">
+                {t('ui.select_currency')}
+              </div>
+              <div className="flex gap-[10px]">
+                {balances.map((b) => {
+                  const selected =
+                    b.currency === balanceToSettle?.currency &&
+                    b.groupId === balanceToSettle?.groupId;
+
+                  return (
+                    <button
+                      key={`${b.friendId}-${b.currency}-${b.groupId ?? 'null'}`}
+                      type="button"
+                      onClick={() => onSelectBalance(b)}
+                      className={cn(
+                        'flex-1 rounded-[14px] border-[1.5px] p-3.5 text-center transition-all duration-[220ms] active:scale-[.97]',
+                        selected
+                          ? 'border-primary bg-primary/8'
+                          : 'border-foreground/12 bg-foreground/4',
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          'text-[16px] font-bold tabular-nums',
+                          0 < b.amount ? 'text-positive' : 'text-negative',
+                        )}
+                      >
+                        {getCurrencyHelpersCached(b.currency).toUIString(BigMath.abs(b.amount))}
+                      </div>
+                      <div className="text-foreground/40 mt-0.5 text-[11px]">{b.currency}</div>
+                      {b.groupName ? (
+                        <div className="text-foreground/35 mt-0.5 truncate text-[10.5px]">
+                          {b.groupName}
+                        </div>
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </div>
       )}
     </AppDrawer>

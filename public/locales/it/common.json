@@ -404,6 +404,9 @@
     "title": "Ricorrenza",
     "view_recurring_page": "Visualizza pagina ricorrenze"
   },
+  "settle_up": {
+    "settled_with": "Saldato con {{name}}"
+  },
   "ui": {
     "added_by": "Aggiunto da",
     "and": "e",

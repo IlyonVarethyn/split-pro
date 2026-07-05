@@ -434,6 +434,9 @@
     "derived_delete_warning": "This expense is part of a recurrence. Only this expense will be deleted. Future recurring expenses will continue.",
     "view_recurring_page": "View Recurring page"
   },
+  "settle_up": {
+    "settled_with": "Settled with {{name}}"
+  },
   "ui": {
     "added_by": "Added by",
     "and": "and",
