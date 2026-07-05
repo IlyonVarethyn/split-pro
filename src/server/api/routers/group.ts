@@ -156,7 +156,6 @@ export const groupRouter = createTRPCRouter({
           id: gu.user.id,
           name: gu.user.name,
           image: gu.user.image,
-          email: gu.user.email,
         })),
         isMember: group.groupUsers.some((gu) => gu.userId === ctx.session.user.id),
       };

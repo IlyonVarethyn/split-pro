@@ -2,6 +2,7 @@ import { type GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useCallback, useEffect } from 'react';
+import { toast } from 'sonner';
 
 import { AvatarStack } from '~/components/group/AvatarStack';
 import { Button } from '~/components/ui/button';
@@ -44,9 +45,12 @@ const JoinGroupPage: NextPageWithUser = () => {
         onSuccess: (group) => {
           router.push(`/groups/${group.id}`).catch(console.error);
         },
+        onError: () => {
+          toast.error(t('errors.something_went_wrong'));
+        },
       },
     );
-  }, [groupId, joinGroupMutation, router]);
+  }, [groupId, joinGroupMutation, router, t]);
 
   const handleOpen = useCallback(() => {
     if (previewQuery.data) {
