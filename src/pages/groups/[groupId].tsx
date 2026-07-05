@@ -615,11 +615,13 @@ const BalancePage: NextPageWithUser<{
                       value={memberEmail}
                       onChange={(e) => setMemberEmail(e.target.value)}
                       placeholder={t('group_details.no_members.add_members_details.placeholder')}
+                      disabled={isArchived}
                       className="border-foreground/18 focus-visible:border-primary text-foreground/90 h-auto flex-1 rounded-none border-0 border-b-[1.5px] bg-transparent px-0 pb-2.5 text-[14.5px] ring-offset-0 focus-visible:ring-0"
                     />
                     <Button
                       onClick={onAddMemberByEmail}
                       disabled={
+                        isArchived ||
                         !isValidMemberEmail ||
                         inviteFriendMutation.isPending ||
                         addMembersMutation.isPending
