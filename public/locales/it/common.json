@@ -84,6 +84,7 @@
     "bank_connection": "Conto bancario"
   },
   "actions": {
+    "add": "Aggiungi",
     "add_expense": "Aggiungi spesa",
     "back": "Indietro",
     "cancel": "Annulla",
@@ -280,6 +281,10 @@
     "group_info": {
       "actions": "Azioni",
       "archive_group": "Archivia gruppo",
+      "archive_group_subtitle": "Sola lettura, escluso dai saldi attivi",
+      "configure_default_split": "Configura divisione predefinita",
+      "default_balance_currency": "Valuta predefinita saldi",
+      "default_split": "Divisione predefinita",
       "archive_group_details": {
         "can_archive": "Questo gruppo verrà archiviato e nascosto dalla tua lista principale dei gruppi. Potrai comunque accedervi più tardi se necessario.",
         "cant_archive": "Non è possibile archiviare un gruppo con saldi in sospeso. Tutti i saldi devono essere saldati prima.",
@@ -311,10 +316,12 @@
         "title": "Sei assolutamente sicuro?"
       },
       "simplify_debts": "Semplifica debiti",
+      "simplify_debts_subtitle": "Riduce il numero di rimborsi tra i membri",
       "title": "Informazioni gruppo"
     },
     "group_statistics": {
       "first_expense": "Prima spesa",
+      "number_of_expenses": "Numero spese",
       "title": "Statistiche gruppo",
       "total_expenses": "Spese totali"
     },

@@ -1,7 +1,6 @@
-import { UserPlusIcon } from '@heroicons/react/24/solid';
 import { type Group, type GroupUser } from '@prisma/client';
 import { clsx } from 'clsx';
-import { CheckIcon, SendIcon } from 'lucide-react';
+import { CheckIcon, SendIcon, UserPlus } from 'lucide-react';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { z } from 'zod';
@@ -123,17 +122,19 @@ const AddMembers: React.FC<{
       />
       <div>
         {enableSendingInvites ? (
-          <div className="mt-1 text-orange-600">
+          <div className="text-negative mt-1 text-[13px]">
             {t('group_details.no_members.add_members_details.warning')}
           </div>
         ) : (
-          <div>{t('group_details.no_members.add_members_details.note')}</div>
+          <div className="text-foreground/40 mt-1 text-[13px]">
+            {t('group_details.no_members.add_members_details.note')}
+          </div>
         )}
 
         <div className="flex justify-center gap-4">
           {enableSendingInvites && (
             <Button
-              className="text-primary mt-4 w-full rounded-full"
+              className="text-primary mt-4 w-full rounded-full active:scale-[.97]"
               variant="outline"
               disabled={!isEmail.success}
               onClick={() => onAddEmailClick(true)}
@@ -145,12 +146,12 @@ const AddMembers: React.FC<{
             </Button>
           )}
           <Button
-            className="text-primary mt-4 w-full rounded-full"
+            className="text-primary mt-4 w-full rounded-full active:scale-[.97]"
             variant="outline"
             disabled={!isEmail.success}
             onClick={() => onAddEmailClick(false)}
           >
-            <UserPlusIcon className="mr-2 h-4 w-4" />
+            <UserPlus className="mr-2 h-4 w-4" />
             {isEmail.success
               ? t('group_details.no_members.add_members_details.add_to_split_pro')
               : t('errors.valid_email')}
@@ -162,7 +163,7 @@ const AddMembers: React.FC<{
           <Button
             variant="ghost"
             key={friend.id}
-            className="focus:text-foreground flex items-center justify-between px-0 py-3.5"
+            className="focus:text-foreground flex items-center justify-between px-0 py-3.5 active:opacity-60"
             onClick={() => onUserSelect(friend.id)}
           >
             <div className={clsx('flex items-center gap-2 rounded-md py-1.5')}>
