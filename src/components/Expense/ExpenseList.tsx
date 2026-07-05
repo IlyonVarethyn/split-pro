@@ -5,11 +5,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { toast } from 'sonner';
-import { CategoryIcon, CurrencyConversionIcon, SettleupIcon } from '~/components/ui/categoryIcons';
+import { CurrencyConversionIcon, SettleupIcon } from '~/components/ui/categoryIcons';
 import { useTranslationWithUtils } from '~/hooks/useTranslationWithUtils';
 import { cn } from '~/lib/utils';
 import type { ExpenseRouter } from '~/server/api/routers/expense';
 import { api } from '~/utils/api';
+import { EntityAvatar } from '../ui/avatar';
 import { Separator } from '../ui/separator';
 
 type ExpensesOutput =
@@ -61,18 +62,21 @@ export const ExpenseList: React.FC<{
           <React.Fragment key={e.id}>
             {isFirstOfMonth && (
               <div className="flex flex-row items-center gap-4 pt-2">
-                <div className="text-xs font-medium text-gray-700 uppercase">
+                <div className="text-foreground/40 text-[11.5px] font-semibold tracking-[.06em] uppercase">
                   {new Intl.DateTimeFormat(i18n.language, {
                     month: 'long',
                     year: 'numeric',
                   }).format(currentDate)}
                 </div>
-                <Separator className="flex-1 bg-gray-800" />
+                <Separator className="bg-foreground/10 flex-1" />
               </div>
             )}
             <Link
               href={`/${isGroup ? 'groups' : 'balances'}/${contactId}/expenses/${e.id}`}
-              className={cn('flex items-center justify-between', isFirstOfMonth ? 'pb-2' : 'py-2')}
+              className={cn(
+                'flex items-center justify-between active:opacity-55',
+                isFirstOfMonth ? 'pb-2' : 'py-2',
+              )}
             >
               {isSettlement && <Settlement e={e} userId={userId} />}
               {isCurrencyConversion && <CurrencyConversion e={e} userId={userId} />}
@@ -103,14 +107,16 @@ const Expense: ExpenseComponent = ({ e, userId }) => {
 
   return (
     <>
-      <div className="flex min-w-0 items-center gap-4">
-        <div className="inline-block w-6 shrink-0 text-center text-xs text-gray-500">
+      <div className="flex min-w-0 items-center gap-3.5">
+        <div className="text-foreground/40 inline-block w-[22px] shrink-0 text-center text-[11px] tabular-nums">
           {toUIDate(e.expenseDate)}
         </div>
-        <CategoryIcon category={e.category} className="size-5 shrink-0 text-gray-400" />
+        <div className="shrink-0">
+          <EntityAvatar entity={e.paidByUser} size={36} />
+        </div>
         <div className="min-w-0 pe-1">
-          <p className="truncate text-sm lg:text-base">{e.name}</p>
-          <p className="truncate text-xs text-gray-500">
+          <p className="truncate text-[14.5px] font-medium">{e.name}</p>
+          <p className="text-foreground/40 truncate text-[12px]">
             {displayName(e.paidByUser, userId)}{' '}
             {t(`ui.expense.user.${e.amount < 0n ? 'received' : 'paid'}`)} {toUIString(e.amount)}
           </p>
@@ -119,18 +125,18 @@ const Expense: ExpenseComponent = ({ e, userId }) => {
       <div className="min-w-10 shrink-0">
         {youPaid || 0n !== yourExpenseAmount ? (
           <>
-            <div className={`text-right text-xs ${youPaid ? 'text-positive' : 'text-negative'}`}>
+            <div className="text-foreground/40 text-right text-[10.5px]">
               {t('actors.you')} {t(`ui.expense.you.${youPaid ? 'lent' : 'owe'}`)}
             </div>
             <div
-              className={`xs:max-w-full max-w-32 truncate text-right ${youPaid ? 'text-positive' : 'text-negative'}`}
+              className={`xs:max-w-full max-w-32 truncate text-right text-[14.5px] font-semibold tabular-nums ${youPaid ? 'text-positive' : 'text-negative'}`}
             >
               {toUIString(yourExpenseAmount)}
             </div>
           </>
         ) : (
           <div>
-            <p className="text-xs text-gray-400">{t('ui.not_involved')}</p>
+            <p className="text-foreground/40 text-[11px]">{t('ui.not_involved')}</p>
           </div>
         )}
       </div>
@@ -147,13 +153,13 @@ const Settlement: ExpenseComponent = ({ e, userId }) => {
   const userDetails = api.user.getUserDetails.useQuery({ userId: receiverId! });
 
   return (
-    <div className="flex items-center gap-4">
-      <div className="inline-block w-6 text-center text-xs text-gray-500">
+    <div className="flex items-center gap-3.5">
+      <div className="text-foreground/40 inline-block w-[22px] text-center text-[11px] tabular-nums">
         {toUIDate(e.expenseDate)}
       </div>
-      <SettleupIcon className="size-5 shrink-0 text-gray-400" />
+      <SettleupIcon className="text-foreground/45 size-5 shrink-0" />
       <div className="min-w-0">
-        <p className="line-clamp-2 text-sm text-gray-400">
+        <p className="text-foreground/45 line-clamp-2 text-[13px]">
           {displayName(e.paidByUser, userId)}{' '}
           {t(`ui.expense.user.${e.amount < 0n ? 'received' : 'paid'}`)} {toUIString(e.amount)}{' '}
           {t('ui.expense.to')} {displayName(userDetails.data, userId)}
@@ -178,20 +184,20 @@ const CurrencyConversion: ExpenseComponent = ({ e, userId }) => {
   const userDetails = api.user.getUserDetails.useQuery({ userId: receiverId! });
 
   return (
-    <div className="flex min-w-0 items-center gap-4">
-      <div className="inline-block w-6 shrink-0 text-center text-xs text-gray-500">
+    <div className="flex min-w-0 items-center gap-3.5">
+      <div className="text-foreground/40 inline-block w-[22px] shrink-0 text-center text-[11px] tabular-nums">
         {toUIDate(e.expenseDate)}
       </div>
-      <CurrencyConversionIcon className="size-5 shrink-0 text-gray-400" />
+      <CurrencyConversionIcon className="text-foreground/45 size-5 shrink-0" />
       <div className="min-w-0">
-        <p className="truncate text-sm lg:text-base">
+        <p className="text-foreground/45 truncate text-[13px] tabular-nums">
           {getCurrencyHelpersCached(e.currency).toUIString(e.amount)} ➡️{' '}
           {
             /* @ts-ignore */
             getCurrencyHelpersCached(e.conversionTo.currency).toUIString(e.conversionTo.amount)
           }
         </p>
-        <p className="truncate text-xs text-gray-500">
+        <p className="text-foreground/40 truncate text-[12px]">
           {t('ui.expense.for')} {displayName(e.paidByUser, userId)} {t('ui.and')}{' '}
           {displayName(userDetails.data, userId)}
         </p>

@@ -2,6 +2,7 @@ import { type Expense, type ExpenseParticipant, SplitType } from '@prisma/client
 import { format } from 'date-fns';
 import { Download } from 'lucide-react';
 import React from 'react';
+import { toast } from 'sonner';
 
 import { Button } from '~/components/ui/button';
 import { useTranslationWithUtils } from '~/hooks/useTranslationWithUtils';
@@ -36,7 +37,7 @@ export const Export: React.FC<ExportCSVProps> = ({
     'Settlement',
   ];
 
-  const { getCurrencyHelpersCached } = useTranslationWithUtils('common');
+  const { t, getCurrencyHelpersCached } = useTranslationWithUtils('common');
 
   const exportToCSV = () => {
     const csvHeaders = headers.join(',');
@@ -82,12 +83,19 @@ export const Export: React.FC<ExportCSVProps> = ({
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      toast.success(t('actions.export_success'));
     }
   };
 
   return (
-    <Button size="sm" variant="secondary" responsiveIcon onClick={exportToCSV} disabled={disabled}>
-      <Download className="h-4 w-4 text-white" size={20} /> Export
+    <Button
+      variant="ghost"
+      onClick={exportToCSV}
+      disabled={disabled}
+      aria-label={t('actions.export')}
+      className="bg-foreground/8 h-auto w-[47px] shrink-0 self-stretch rounded-[14px] p-0 active:scale-[.94] disabled:opacity-40"
+    >
+      <Download className="text-foreground/65 size-[17px]" />
     </Button>
   );
 };

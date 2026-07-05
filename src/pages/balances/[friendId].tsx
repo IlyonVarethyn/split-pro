@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, HandCoins, Pencil, PlusIcon } from 'lucide-react';
+import { ChevronLeftIcon, Pencil } from 'lucide-react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -70,21 +70,27 @@ const FriendPage: NextPageWithUser = ({ user }) => {
       </Head>
       <MainLayout
         title={
-          <div className="flex items-center gap-2">
-            <Link href="/balances">
-              <ChevronLeftIcon className="mr-1 h-6 w-6" />
+          <div className="flex w-full items-center gap-3">
+            <Link
+              href="/balances"
+              className="bg-foreground/6 flex size-9 shrink-0 items-center justify-center rounded-full active:scale-[.9]"
+            >
+              <ChevronLeftIcon className="text-foreground/70 size-5" />
             </Link>
-            <p className="text-lg font-normal">{displayName(friendQuery.data)}</p>
-          </div>
-        }
-        actions={
-          <div className="flex items-center gap-2">
-            <DeleteFriend friendId={_friendId} disabled={!(0 === balances.data?.length)} />
+            <EntityAvatar entity={friendQuery.data} size={34} />
+            <p className="min-w-0 flex-1 truncate text-[21px] font-bold">
+              {displayName(friendQuery.data)}
+            </p>
             <AppDrawer
               title={t('balances.user_preferences.title')}
               trigger={
-                <Button variant="ghost" size="icon" disabled={!friendQuery.data}>
-                  <Pencil className="size-4" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  disabled={!friendQuery.data}
+                  className="bg-foreground/6 size-9 shrink-0 rounded-full p-0 active:scale-[.9]"
+                >
+                  <Pencil className="text-foreground/50 size-3.5" />
                 </Button>
               }
             >
@@ -157,37 +163,33 @@ const FriendPage: NextPageWithUser = ({ user }) => {
                 </div>
               )}
             </AppDrawer>
-          </div>
-        }
-        header={
-          <div className="flex w-full items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Link href="/balances">
-                <ChevronLeftIcon className="mr-1 h-6 w-6" />
-              </Link>
-              <EntityAvatar entity={friendQuery.data} size={25} />
-              {displayName(friendQuery.data)}
-            </div>
+            <DeleteFriend friendId={_friendId} disabled={!(0 === balances.data?.length)} />
           </div>
         }
         loading={balances.isPending || expenses.isPending || friendQuery.isPending}
       >
         {!friendQuery.data ? null : (
           <div className="mb-28 transition-discrete starting:opacity-0">
-            <CumulatedBalances entityId={friendQuery.data.id} balances={aggregatedBalances} />
-            <div className="mt-6 mb-4 flex justify-center gap-2">
+            <CumulatedBalances
+              entityId={friendQuery.data.id}
+              balances={aggregatedBalances}
+              name={displayName(friendQuery.data)}
+            />
+            <div className="mt-[18px] mb-5 flex items-stretch gap-[10px]">
               <SettleUp balances={balances.data} friend={friendQuery.data}>
                 <Button
-                  size="sm"
-                  className="flex w-[150px] items-center gap-2 rounded-md border bg-cyan-500 px-3 text-sm font-normal text-black focus:bg-cyan-600 focus:ring-0 focus-visible:outline-hidden lg:w-[180px]"
+                  className="bg-primary text-primary-foreground w-full flex-1 rounded-[14px] py-[13px] text-[14.5px] font-bold active:scale-[.97] disabled:opacity-40"
                   disabled={!balances.data?.length}
                 >
-                  <HandCoins className="size-4" /> {t('actions.settle_up')}
+                  {t('actions.settle_up')}
                 </Button>
               </SettleUp>
-              <Link href={`/add?friendId=${friendQuery.data.id}`}>
-                <Button size="sm" variant="secondary" responsiveIcon>
-                  <PlusIcon className="size-4" /> {t('actions.add_expense')}
+              <Link href={`/add?friendId=${friendQuery.data.id}`} className="flex-1">
+                <Button
+                  variant="secondary"
+                  className="bg-foreground/8 w-full rounded-[14px] py-[13px] text-[14.5px] font-semibold active:scale-[.97]"
+                >
+                  {t('actions.add_expense')}
                 </Button>
               </Link>
               <Export

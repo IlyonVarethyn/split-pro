@@ -112,6 +112,7 @@
     "create": "Create",
     "edit_expense": "Edit expense",
     "export": "Export",
+    "export_success": "Expenses exported",
     "fetch": "Fetch",
     "import": "Import",
     "invite": "Invite",
@@ -385,7 +386,11 @@
       "cleared": "Default split cleared",
       "configure": "Default split",
       "updated": "Default split updated"
-    }
+    },
+    "owe_in_currencies_one": "You owe {{name}}",
+    "owe_in_currencies_other": "You owe {{name}}, in {{count}} currencies",
+    "owed_in_currencies_one": "{{name}} owes you",
+    "owed_in_currencies_other": "{{name}} owes you, in {{count}} currencies"
   },
   "navigation": {
     "account": "Account",

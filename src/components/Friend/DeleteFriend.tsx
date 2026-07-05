@@ -43,8 +43,12 @@ export const DeleteFriend: React.FC<{
       loading={deleteFriendMutation.isPending}
       variant="destructive"
     >
-      <Button variant="ghost" className="px-0">
-        <Trash2 className="text-red-500" size={20} />
+      <Button
+        variant="ghost"
+        size="icon"
+        className="bg-foreground/6 size-9 shrink-0 rounded-full p-0 active:scale-[.9]"
+      >
+        <Trash2 className="text-foreground/45 size-3.5" />
       </Button>
     </SimpleConfirmationDialog>
   );

@@ -95,6 +95,7 @@
     "create": "Crea",
     "edit_expense": "Modifica spesa",
     "export": "Esporta",
+    "export_success": "Spese esportate",
     "fetch": "Recupera",
     "import": "Importa",
     "invite": "Invita",
@@ -348,6 +349,12 @@
     "in_splitpro": "in Splitpro",
     "join_to": "Unisciti a",
     "text": "Unisciti al gruppo e potrai aggiungere, gestire spese e tracciare i tuoi saldi"
+  },
+  "balances": {
+    "owe_in_currencies_one": "Devi a {{name}}",
+    "owe_in_currencies_other": "Devi a {{name}}, in {{count}} valute",
+    "owed_in_currencies_one": "{{name}} ti deve",
+    "owed_in_currencies_other": "{{name}} ti deve, in {{count}} valute"
   },
   "meta": {
     "application_name": "SplitPro",
