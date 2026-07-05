@@ -111,6 +111,7 @@
     "confirm": "Confirm",
     "understood": "Got it",
     "create": "Create",
+    "edit": "Edit",
     "edit_expense": "Edit expense",
     "export": "Export",
     "export_success": "Expenses exported",
@@ -253,7 +254,9 @@
         "messages": {
           "upload_success": "File uploaded successfully"
         },
-        "receipt_label": "Receipt"
+        "receipt_label": "Receipt",
+        "receipt_attached": "Receipt attached",
+        "receipt_hint": "Tap to view"
       },
       "user_input": {
         "add_more_friends": "Search friends, groups or add email",

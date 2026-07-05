@@ -1,4 +1,3 @@
-import { Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useMemo } from 'react';
@@ -76,8 +75,11 @@ export const DeleteExpense: React.FC<DeleteExpenseProps> = ({ expenseId, recurre
       loading={deleteExpenseMutation.isPending}
       variant="destructive"
     >
-      <Button variant="ghost">
-        <Trash2 className="text-red-400" size={23} />
+      <Button
+        variant="ghost"
+        className="bg-negative/12 text-negative flex-1 rounded-[14px] py-[13px] text-[14.5px] font-semibold active:scale-[.97]"
+      >
+        {t('ui.delete')}
       </Button>
     </SimpleConfirmationDialog>
   );
