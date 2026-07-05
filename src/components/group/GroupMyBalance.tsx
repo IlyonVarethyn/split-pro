@@ -1,93 +1,60 @@
-import { type BalanceView, type User } from '@prisma/client';
+import { type BalanceView } from '@prisma/client';
 import React, { useMemo } from 'react';
 
-import { CumulatedBalances } from '~/components/Expense/CumulatedBalances';
+import { ConvertibleBalance } from '~/components/Expense/ConvertibleBalance';
 import { useTranslationWithUtils } from '~/hooks/useTranslationWithUtils';
-import { BigMath } from '~/utils/numbers';
 
 interface GroupMyBalanceProps {
   userId: number;
   groupBalances?: BalanceView[];
-  users?: User[];
   groupId: number;
 }
 
-const GroupMyBalance: React.FC<GroupMyBalanceProps> = ({
-  userId,
-  groupBalances = [],
-  users = [],
-  groupId,
-}) => {
-  const { t, getCurrencyHelpersCached } = useTranslationWithUtils();
-
-  const userMap = useMemo(
-    () =>
-      users.reduce<Record<number, User>>((acc, user) => {
-        acc[user.id] = user;
-        return acc;
-      }, {}),
-    [users],
-  );
-
-  const friendBalances = useMemo(
-    () =>
-      groupBalances.reduce<Record<number, Record<string, bigint>>>((acc, balance) => {
-        if (balance.userId === userId && 0 < BigMath.abs(balance.amount)) {
-          acc[balance.friendId] ??= {};
-          const friendBalance = acc[balance.friendId]!;
-          friendBalance[balance.currency] =
-            (friendBalance[balance.currency] ?? 0n) + balance.amount;
-        }
-        return acc;
-      }, {}),
-    [groupBalances, userId],
-  );
+/**
+ * Group detail "Saldo" panel: a single row with a muted label and the
+ * current user's net balance across every member of the group, cumulated
+ * per currency. Never sums different currencies — a single amount is shown
+ * when there's one currency, otherwise a colored primary line plus a muted
+ * secondary line per extra currency (via `ConvertibleBalance`'s `stacked`
+ * mode, the same static-display convention used by the friend panel and
+ * group list cards). Per-friend breakdown now lives in the Saldi tab.
+ */
+const GroupMyBalance: React.FC<GroupMyBalanceProps> = ({ userId, groupBalances = [], groupId }) => {
+  const { t } = useTranslationWithUtils();
 
   const cumulatedBalances = useMemo(
     () =>
       Object.entries(
-        Object.values(friendBalances).reduce<Record<string, bigint>>((acc, balances) => {
-          if (balances) {
-            Object.entries(balances).forEach(([currency, amount]) => {
-              acc[currency] = (acc[currency] ?? 0n) + amount;
-            });
+        groupBalances.reduce<Record<string, bigint>>((acc, balance) => {
+          if (balance.userId === userId && 0n !== balance.amount) {
+            acc[balance.currency] = (acc[balance.currency] ?? 0n) + balance.amount;
           }
           return acc;
         }, {}),
-      ).map(([currency, amount]) => ({ currency, amount })),
-    [friendBalances],
+      )
+        .filter(([, amount]) => 0n !== amount)
+        .map(([currency, amount]) => ({ currency, amount })),
+    [groupBalances, userId],
   );
 
-  return (
-    <div className="bg-foreground/5 flex gap-2 rounded-2xl px-5 py-4.5">
-      <div className="flex flex-col gap-2">
-        <CumulatedBalances entityId={groupId} entityType="group" balances={cumulatedBalances} />
-
-        {Object.entries(friendBalances)
-          .slice(0, 2)
-          .map(([friendId, balances]) => {
-            const friend = userMap[+friendId];
-            return (
-              <div key={friendId} className="text-sm text-gray-500">
-                {Object.entries(balances).map(([currency, amount]) => (
-                  <div key={currency}>
-                    {0 < amount
-                      ? `${friend?.name} ${t('ui.expense.user.owe')} ${t('actors.you_dativus').toLowerCase()}`
-                      : `${t('actors.you')} ${t('ui.expense.you.owe')} ${friend?.name}`}{' '}
-                    {getCurrencyHelpersCached(currency).toUIString(amount)}
-                  </div>
-                ))}
-              </div>
-            );
-          })}
-
-        {2 < Object.keys(friendBalances).length ? (
-          <div className="text-sm text-gray-500">
-            +{Object.keys(friendBalances).length - 2}{' '}
-            {Object.keys(friendBalances).length === 3 ? t('ui.balance') : t('ui.balances')}...
-          </div>
-        ) : null}
+  if (0 === cumulatedBalances.length) {
+    return (
+      <div className="bg-foreground/5 text-foreground/40 rounded-[18px] px-[18px] py-4 text-center text-[13px]">
+        {t('ui.settled_up')}
       </div>
+    );
+  }
+
+  return (
+    <div className="bg-foreground/5 flex items-center justify-between rounded-[18px] px-[18px] py-4">
+      <span className="text-foreground/55 text-[13px]">{t('group_details.your_balance')}</span>
+      <ConvertibleBalance
+        stacked
+        balances={cumulatedBalances}
+        entityId={groupId}
+        entityType="group"
+        className="text-[20px] font-bold"
+      />
     </div>
   );
 };

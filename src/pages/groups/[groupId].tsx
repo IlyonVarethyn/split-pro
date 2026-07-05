@@ -2,7 +2,6 @@ import { clsx } from 'clsx';
 import {
   Archive,
   BarChartHorizontal,
-  Check,
   ChevronLeft,
   DoorOpen,
   Info,
@@ -11,13 +10,14 @@ import {
   Share,
   Trash2,
   UserPlus,
+  Users,
   X,
 } from 'lucide-react';
 import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { BalanceList } from '~/components/Expense/BalanceList';
 import { ExpenseList } from '~/components/Expense/ExpenseList';
@@ -66,13 +66,12 @@ const BalancePage: NextPageWithUser<{
   const upsertDefaultSplitMutation = api.group.upsertDefaultSplit.useMutation();
   const clearDefaultSplitMutation = api.group.clearDefaultSplit.useMutation();
 
-  const [isInviteCopied, setIsInviteCopied] = useState(false);
-
   const inviteMembers = useCallback(async () => {
     if (!groupDetailQuery.data) {
       return;
     }
-    const inviteLink = `${window.location.origin}/join-group?groupId=${groupDetailQuery.data.publicId}`;
+    const inviteUrl = `/join-group?groupId=${groupDetailQuery.data.publicId}`;
+    const inviteLink = `${window.location.origin}${inviteUrl}`;
 
     if (navigator.share) {
       navigator
@@ -85,12 +84,14 @@ const BalancePage: NextPageWithUser<{
         .catch((error) => console.error('Error sharing', error));
     } else {
       await navigator.clipboard.writeText(inviteLink);
-      setIsInviteCopied(true);
-      setTimeout(() => {
-        setIsInviteCopied(false);
-      }, 2000);
+      toast.success(t('group_details.copied'), {
+        action: {
+          label: t('ui.preview'),
+          onClick: () => router.push(inviteUrl),
+        },
+      });
     }
-  }, [groupDetailQuery.data, t]);
+  }, [groupDetailQuery.data, t, router]);
 
   const isAdmin = groupDetailQuery.data?.userId === user.id;
   const isArchived = Boolean(groupDetailQuery.data?.archivedAt);
@@ -153,18 +154,28 @@ const BalancePage: NextPageWithUser<{
       </Head>
       <MainLayout
         title={
-          <div className="flex items-center">
-            <Button variant="ghost" onClick={() => router.replace(`/groups`)} className="mr-2 p-0">
-              <ChevronLeft className="h-6 w-6" />
-            </Button>
-            <p className="text-lg">{groupDetailQuery.data?.name}</p>
-          </div>
-        }
-        actions={
-          <div className="flex gap-2">
+          <div className="flex w-full items-center gap-3">
+            <button
+              type="button"
+              onClick={() => router.replace(`/groups`)}
+              className="bg-foreground/6 flex size-9 shrink-0 items-center justify-center rounded-full active:scale-[.9]"
+            >
+              <ChevronLeft className="text-foreground/70 size-5" />
+            </button>
+            <p className="min-w-0 flex-1 truncate text-[21px] font-bold tracking-[-0.3px]">
+              {groupDetailQuery.data?.name}
+            </p>
             <AppDrawer
               title={t('group_details.group_statistics.title')}
-              trigger={<BarChartHorizontal className="h-6 w-6" />}
+              trigger={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="bg-foreground/6 size-9 shrink-0 rounded-full p-0 active:scale-[.9]"
+                >
+                  <BarChartHorizontal className="text-foreground/50 size-[15px]" />
+                </Button>
+              }
               className="h-[85vh]"
             >
               <>
@@ -199,7 +210,15 @@ const BalancePage: NextPageWithUser<{
             </AppDrawer>
             <AppDrawer
               title={t('group_details.group_info.title')}
-              trigger={<Info className="h-6 w-6" />}
+              trigger={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="bg-foreground/6 size-9 shrink-0 rounded-full p-0 active:scale-[.9]"
+                >
+                  <Info className="text-foreground/50 size-[15px]" />
+                </Button>
+              }
               className="h-[85vh]"
             >
               <>
@@ -228,54 +247,6 @@ const BalancePage: NextPageWithUser<{
                       }
                     }}
                   />
-                </div>
-
-                <p className="mt-5 font-semibold">{t('group_details.group_info.members')}</p>
-                <div className="mt-2 flex flex-col gap-2">
-                  {groupDetailQuery.data?.groupUsers.map((groupUser) => (
-                    <div key={groupUser.userId} className="flex items-center justify-between">
-                      <div className={clsx('flex items-center gap-2 rounded-md py-1.5')}>
-                        <EntityAvatar entity={groupUser.user} />
-                        <p>{displayName(groupUser.user)}</p>
-                      </div>
-                      {groupUser.userId === groupDetailQuery.data?.userId ? (
-                        <p className="text-sm text-gray-400">{t('actors.owner')}</p>
-                      ) : (
-                        isAdmin &&
-                        (() => {
-                          const canLeave = !groupDetailQuery.data?.groupBalances.find(
-                            (b) => 0n !== b.amount && b.userId === groupUser.userId,
-                          );
-
-                          return (
-                            <SimpleConfirmationDialog
-                              title={
-                                canLeave
-                                  ? t('group_details.group_info.remove_member_details.title')
-                                  : ''
-                              }
-                              description={
-                                canLeave
-                                  ? t('group_details.group_info.remove_member_details.can_remove')
-                                  : t('group_details.group_info.remove_member_details.cant_remove')
-                              }
-                              hasPermission={canLeave}
-                              onConfirm={() => onGroupLeave(groupUser.userId)}
-                              loading={leaveGroupMutation.isPending}
-                              variant="destructive"
-                            >
-                              <Button
-                                variant="ghost"
-                                className="justify-start p-0 text-left text-red-500 hover:text-red-500 hover:opacity-90"
-                              >
-                                <X className="mr-2 h-5 w-5" />
-                              </Button>
-                            </SimpleConfirmationDialog>
-                          );
-                        })()
-                      )}
-                    </div>
-                  ))}
                 </div>
 
                 <div className="mt-6">
@@ -483,15 +454,6 @@ const BalancePage: NextPageWithUser<{
             </AppDrawer>
           </div>
         }
-        header={
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" onClick={() => router.replace(`/groups`)} className="mr-2 p-0">
-              <ChevronLeft className="h-6 w-6" />
-            </Button>
-            <EntityAvatar entity={groupDetailQuery.data} size={30} />
-            <p className="text-lg">{groupDetailQuery.data?.name}</p>
-          </div>
-        }
         loading={groupDetailQuery.isPending}
       >
         {1 === groupDetailQuery.data?.groupUsers.length && !expensesQuery.data?.length ? (
@@ -499,27 +461,104 @@ const BalancePage: NextPageWithUser<{
             <NoMembers group={groupDetailQuery.data} enableSendingInvites={enableSendingInvites} />
           </div>
         ) : (
-          <div className="transition-discrete starting:opacity-0">
-            {groupDetailQuery.data ? (
-              <AvatarStack members={groupDetailQuery.data.groupUsers.map((gu) => gu.user)} />
-            ) : null}
-            <div className="mt-4 mb-4">
-              {isArchived && (
-                <div className="mb-4 flex justify-center gap-2 overflow-y-auto pb-4">
-                  <p>
-                    {t('group_details.group_info.archived')} {t('ui.on')}{' '}
-                    {toUIDate(groupDetailQuery.data!.archivedAt!)}
-                  </p>
-                </div>
+          <div className="flex flex-col gap-[22px] transition-discrete starting:opacity-0">
+            {isArchived && (
+              <div className="flex justify-center gap-2 overflow-y-auto">
+                <p>
+                  {t('group_details.group_info.archived')} {t('ui.on')}{' '}
+                  {toUIDate(groupDetailQuery.data!.archivedAt!)}
+                </p>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between">
+              {groupDetailQuery.data ? (
+                <AvatarStack members={groupDetailQuery.data.groupUsers.map((gu) => gu.user)} />
+              ) : (
+                <div />
               )}
-              <GroupMyBalance
-                userId={user.id}
-                groupBalances={groupDetailQuery.data?.groupBalances}
-                users={groupDetailQuery.data?.groupUsers.map((gu) => gu.user)}
-                groupId={groupId}
-              />
+              <div className="flex shrink-0 gap-2">
+                <AppDrawer
+                  title={t('group_details.group_info.members')}
+                  trigger={
+                    <Button
+                      variant="ghost"
+                      className="bg-foreground/7 text-foreground/75 h-auto gap-1.5 rounded-full px-[13px] py-2 text-[12px] font-semibold active:scale-[.95]"
+                    >
+                      <Users className="size-[13px]" />
+                      {t('group_details.group_info.members')}
+                    </Button>
+                  }
+                  className="h-[70vh]"
+                >
+                  <div className="flex flex-col gap-2">
+                    {groupDetailQuery.data?.groupUsers.map((groupUser) => (
+                      <div key={groupUser.userId} className="flex items-center justify-between">
+                        <div className={clsx('flex items-center gap-2 rounded-md py-1.5')}>
+                          <EntityAvatar entity={groupUser.user} />
+                          <p>{displayName(groupUser.user)}</p>
+                        </div>
+                        {groupUser.userId === groupDetailQuery.data?.userId ? (
+                          <p className="text-foreground/45 text-sm">{t('actors.owner')}</p>
+                        ) : (
+                          isAdmin &&
+                          (() => {
+                            const memberCanLeave = !groupDetailQuery.data?.groupBalances.find(
+                              (b) => 0n !== b.amount && b.userId === groupUser.userId,
+                            );
+
+                            return (
+                              <SimpleConfirmationDialog
+                                title={
+                                  memberCanLeave
+                                    ? t('group_details.group_info.remove_member_details.title')
+                                    : ''
+                                }
+                                description={
+                                  memberCanLeave
+                                    ? t('group_details.group_info.remove_member_details.can_remove')
+                                    : t(
+                                        'group_details.group_info.remove_member_details.cant_remove',
+                                      )
+                                }
+                                hasPermission={memberCanLeave}
+                                onConfirm={() => onGroupLeave(groupUser.userId)}
+                                loading={leaveGroupMutation.isPending}
+                                variant="destructive"
+                              >
+                                <Button
+                                  variant="ghost"
+                                  className="justify-start p-0 text-left text-red-500 hover:text-red-500 hover:opacity-90"
+                                >
+                                  <X className="mr-2 h-5 w-5" />
+                                </Button>
+                              </SimpleConfirmationDialog>
+                            );
+                          })()
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </AppDrawer>
+                <Button
+                  variant="ghost"
+                  onClick={inviteMembers}
+                  disabled={isArchived}
+                  className="bg-foreground/7 text-foreground/75 h-auto gap-1.5 rounded-full px-[13px] py-2 text-[12px] font-semibold active:scale-[.95] disabled:opacity-40"
+                >
+                  <Share className="size-[13px]" />
+                  {t('actions.invite')}
+                </Button>
+              </div>
             </div>
-            <div className="mb-4 flex justify-center gap-2 overflow-y-auto border-b pb-4">
+
+            <GroupMyBalance
+              userId={user.id}
+              groupBalances={groupDetailQuery.data?.groupBalances}
+              groupId={groupId}
+            />
+
+            <div className="border-foreground/8 flex justify-center gap-2 overflow-y-auto border-b pb-4">
               <Link href={`/add?groupId=${groupId}`}>
                 <Button size="sm" className="w-40 gap-1 text-sm lg:w-[180px]" disabled={isArchived}>
                   <PlusIcon className="size-4" /> {t('actions.add_expense')}
@@ -528,28 +567,11 @@ const BalancePage: NextPageWithUser<{
 
               <AddMembers group={groupDetailQuery.data} enableSendingInvites={enableSendingInvites}>
                 <Button size="sm" responsiveIcon variant="secondary" disabled={isArchived}>
-                  <UserPlus className="size-4 text-gray-400" /> {t('group_details.add_members')}
+                  <UserPlus className="size-4" /> {t('group_details.add_members')}
                 </Button>
               </AddMembers>
-
-              <Button
-                size="sm"
-                responsiveIcon
-                variant="secondary"
-                onClick={inviteMembers}
-                disabled={isArchived}
-              >
-                {isInviteCopied ? (
-                  <>
-                    <Check className="size-4" /> {t('group_details.copied')}
-                  </>
-                ) : (
-                  <>
-                    <Share className="size-4 text-gray-400" /> {t('actions.invite')}
-                  </>
-                )}
-              </Button>
             </div>
+
             <Tabs defaultValue="expenses">
               <TabsList className="mx-auto grid w-full max-w-96 grid-cols-2">
                 <TabsTrigger value="expenses">{t('group_details.tabs.expenses')}</TabsTrigger>

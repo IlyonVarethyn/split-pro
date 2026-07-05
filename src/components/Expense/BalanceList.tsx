@@ -1,17 +1,15 @@
 import type { BalanceView, User } from '@prisma/client';
 import { clsx } from 'clsx';
-import { type ComponentProps, Fragment, useCallback, useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
+import { toast } from 'sonner';
 import { EntityAvatar } from '~/components/ui/avatar';
 import { api } from '~/utils/api';
 import { BigMath } from '~/utils/numbers';
 
 import { useTranslationWithUtils } from '~/hooks/useTranslationWithUtils';
-import { CurrencyConversion } from '../Friend/CurrencyConversion';
 import { GroupSettleUp } from '../Friend/GroupSettleup';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Button } from '../ui/button';
-import { CurrencyConversionIcon, SettleupIcon } from '../ui/categoryIcons';
-import { toast } from 'sonner';
 
 interface UserWithBalance {
   user: User;
@@ -25,9 +23,6 @@ export const BalanceList: React.FC<{
 }> = ({ groupBalances = [], users = [] }) => {
   const { displayName, t, getCurrencyHelpersCached } = useTranslationWithUtils();
   const userQuery = api.user.me.useQuery();
-
-  const addOrEditCurrencyConversionMutation = api.expense.addOrEditCurrencyConversion.useMutation();
-  const apiUtils = api.useUtils();
 
   const userMap = useMemo(() => {
     const res = users.reduce<Record<number, UserWithBalance>>((acc, user) => {
@@ -67,6 +62,7 @@ export const BalanceList: React.FC<{
       {Object.values(userMap).map(({ user, total, balances }) => {
         let totalAmount: [string, bigint] = ['', 0n];
         const isCurrentUser = userQuery.data?.id === user.id;
+        const isSettled = Object.values(total).every((amount) => 0n === amount);
 
         Object.entries(total).forEach(([currency, amount]) => {
           if (BigMath.abs(amount) > BigMath.abs(totalAmount[1])) {
@@ -75,14 +71,14 @@ export const BalanceList: React.FC<{
         });
 
         return (
-          <AccordionItem key={user.id} value={displayName(user)}>
-            <AccordionTrigger className="overflow-hidden hover:no-underline">
-              <div className="mr-2 flex min-w-0 flex-1 items-center gap-3">
-                <EntityAvatar entity={user} />
-                <div className="text-foreground line-clamp-2 min-w-0 break-words">
-                  {displayName(user, userQuery.data?.id)}
-                  {Object.values(total).every((amount) => 0n === amount) ? (
-                    <span className="text-gray-400">
+          <AccordionItem key={user.id} value={displayName(user)} className="border-foreground/8">
+            <AccordionTrigger className="gap-3 overflow-hidden py-3.5 hover:no-underline active:opacity-60">
+              <div className="flex min-w-0 flex-1 items-center gap-[13px]">
+                <EntityAvatar entity={user} size={38} />
+                <div className="min-w-0 flex-1 text-left text-[15px] break-words">
+                  <span className="font-medium">{displayName(user, userQuery.data?.id)}</span>
+                  {isSettled ? (
+                    <span className="text-foreground/45">
                       {' '}
                       {isCurrentUser
                         ? t('expense_details.balance_list.are_settled_up')
@@ -90,7 +86,7 @@ export const BalanceList: React.FC<{
                     </span>
                   ) : (
                     <>
-                      <span className="text-gray-400">
+                      <span className="text-foreground/45">
                         {' '}
                         {t(
                           `ui.expense.${isCurrentUser ? 'you' : 'user'}.${0 < totalAmount[1] ? 'lent' : 'owe'}`,
@@ -98,8 +94,8 @@ export const BalanceList: React.FC<{
                       </span>
                       <span
                         className={clsx(
-                          'text-right',
-                          0 < totalAmount[1] ? 'text-emerald-500' : 'text-orange-600',
+                          'font-semibold tabular-nums',
+                          0 < totalAmount[1] ? 'text-positive' : 'text-negative',
                         )}
                       >
                         {getCurrencyHelpersCached(totalAmount[0]).toUIString(
@@ -122,77 +118,45 @@ export const BalanceList: React.FC<{
                         return null;
                       }
 
-                      const sender = 0 < amount ? friend : user;
-                      const receiver = 0 < amount ? user : friend;
-
-                      const onSubmit: ComponentProps<
-                        typeof CurrencyConversion
-                      >['onSubmit'] = async (data) => {
-                        await addOrEditCurrencyConversionMutation.mutateAsync({
-                          ...data,
-                          senderId: sender.id,
-                          receiverId: receiver.id,
-                          groupId: groupBalances[0]!.groupId,
-                        });
-                        await apiUtils.invalidate();
-                      };
-
                       return (
                         <div
                           key={friendId + currency}
-                          className="flex h-12 w-full items-center justify-between border-t-2"
+                          className="flex items-center justify-between gap-[10px] py-2 pl-[51px]"
                         >
-                          <div className="ml-5 flex cursor-pointer items-center gap-3 text-sm">
-                            <EntityAvatar entity={friend} size={20} />
-                            <div className="text-foreground">
-                              {displayName(friend, userQuery.data?.id)}
-                              <span className="text-gray-400">
-                                {' '}
-                                {t(
-                                  `ui.expense.${friend.id === userQuery.data?.id ? 'you' : 'user'}.${0 > amount ? 'get' : 'pay'}`,
-                                )}{' '}
-                              </span>
-                              <span
-                                className={clsx(
-                                  'text-right',
-                                  0 < amount ? 'text-emerald-500' : 'text-orange-600',
-                                )}
-                              >
-                                {getCurrencyHelpersCached(currency).toUIString(BigMath.abs(amount))}
-                              </span>
-                              <span className="xs:inline hidden text-gray-400">
-                                {' '}
-                                {t(`ui.expense.${0 < amount ? 'to' : 'from'}`, {
-                                  ns: 'common',
-                                })}{' '}
-                              </span>
-                              <span className="xs:inline text-foreground hidden">
-                                {displayName(user, userQuery.data?.id, 'accusativus')}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="flex gap-2">
-                            <GroupSettleUp
-                              friend={friend}
-                              user={user}
-                              amount={amount}
-                              currency={currency}
-                              groupId={groupBalances[0]!.groupId!}
+                          <div className="text-foreground/55 min-w-0 text-[13px]">
+                            {displayName(friend, userQuery.data?.id)}{' '}
+                            <span className="text-foreground/45">
+                              {t(
+                                `ui.expense.${friend.id === userQuery.data?.id ? 'you' : 'user'}.${0 > amount ? 'get' : 'pay'}`,
+                              )}{' '}
+                            </span>
+                            <span
+                              className={clsx(
+                                'font-semibold tabular-nums',
+                                0 < amount ? 'text-positive' : 'text-negative',
+                              )}
                             >
-                              <Button size="icon" variant="secondary" className="size-8">
-                                <SettleupIcon className="size-4" />
-                              </Button>
-                            </GroupSettleUp>
-                            <CurrencyConversion
-                              onSubmit={onSubmit}
-                              amount={amount}
-                              currency={currency}
-                            >
-                              <Button size="icon" variant="secondary" className="size-8">
-                                <CurrencyConversionIcon className="size-4" />
-                              </Button>
-                            </CurrencyConversion>
+                              {getCurrencyHelpersCached(currency).toUIString(BigMath.abs(amount))}
+                            </span>{' '}
+                            <span className="text-foreground/45">
+                              {t(`ui.expense.${0 < amount ? 'to' : 'from'}`, { ns: 'common' })}{' '}
+                            </span>
+                            {displayName(user, userQuery.data?.id, 'accusativus')}
                           </div>
+                          <GroupSettleUp
+                            friend={friend}
+                            user={user}
+                            amount={amount}
+                            currency={currency}
+                            groupId={groupBalances[0]!.groupId!}
+                          >
+                            <Button
+                              variant="ghost"
+                              className="bg-primary/14 text-primary h-auto shrink-0 rounded-full px-3.5 py-2 text-[12.5px] font-bold active:scale-[.95]"
+                            >
+                              {t('actions.settle_up')}
+                            </Button>
+                          </GroupSettleUp>
                         </div>
                       );
                     })}

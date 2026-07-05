@@ -366,7 +366,8 @@
       "balances": "Balances",
       "expenses": "Expenses"
     },
-    "title": "Group outstanding balances"
+    "title": "Group outstanding balances",
+    "your_balance": "Your balance in this group"
   },
   "invite_message": {
     "in_splitpro": "in Splitpro",
@@ -478,6 +479,7 @@
     "or": "or",
     "outstanding_balances": "Outstanding balances",
     "total_balance": "Total balance",
+    "preview": "Preview",
     "select_currency": "Select currency",
     "settle_up_name": "Settle up",
     "settled_up": "Settled up",

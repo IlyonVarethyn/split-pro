@@ -343,7 +343,8 @@
       "balances": "Saldi",
       "expenses": "Spese"
     },
-    "title": "Saldi in sospeso del gruppo"
+    "title": "Saldi in sospeso del gruppo",
+    "your_balance": "Il tuo saldo nel gruppo"
   },
   "invite_message": {
     "in_splitpro": "in Splitpro",
@@ -448,6 +449,7 @@
     "on": "il",
     "or": "o",
     "outstanding_balances": "Saldi in sospeso",
+    "preview": "Anteprima",
     "select_currency": "Seleziona valuta",
     "settle_up_name": "Regola",
     "settled_up": "Regolato",
