@@ -34,7 +34,7 @@ type ExpenseDetailsOutput = NonNullable<inferRouterOutputs<ExpenseRouter>['getEx
 
 const EDIT_CIRCLE_CLASS = 'bg-foreground/6 size-9 shrink-0 rounded-full p-0 active:scale-[.9]';
 const EDIT_BLOCK_CLASS =
-  'bg-foreground/8 flex-1 rounded-[14px] py-[13px] text-[14.5px] font-semibold active:scale-[.97]';
+  'bg-foreground/8 w-full flex-1 rounded-[14px] py-[13px] text-[14.5px] font-semibold active:scale-[.97]';
 
 const SPLIT_TYPE_TITLE_KEYS: Partial<Record<SplitType, string>> = {
   [SplitType.EQUAL]: 'expense_details.add_expense_details.split_type_section.types.equal.title',

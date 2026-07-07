@@ -137,11 +137,11 @@ const CumulatedBalanceDisplay: React.FC<{
   }
 
   return (
-    <div className={cn('flex-1', className)}>
+    <div className={cn('flex-1 text-center', className)}>
       <p className="text-foreground/45 mb-[9px] text-[11.5px] tracking-[.07em] uppercase">
         {prefix}
       </p>
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap justify-center gap-1">
         <ConvertibleBalance
           balances={cumulatedBalances}
           stacked

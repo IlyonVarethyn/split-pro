@@ -94,9 +94,9 @@ describe('getCurrencyHelpers', () => {
           expect(toUIString(5678900n)).toBe('56 789 €');
         });
 
-        it('should not insert thousands separators for single ~1k values', () => {
+        it('should insert thousands separators for ~1k values', () => {
           const value = 123400n;
-          expect(toUIString(value)).toBe('1234 €');
+          expect(toUIString(value)).toBe('1 234 €');
         });
       });
     });

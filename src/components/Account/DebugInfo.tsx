@@ -139,7 +139,7 @@ export const DebugInfoRow: React.FC<{
 }> = ({ label, value, className }) =>
   value ? (
     <span className={cn('flex items-center justify-between', className)}>
-      <span className="text-foreground/40">{label}</span>
-      <span className="text-foreground/65 truncate pl-4">{value}</span>
+      <span className="text-foreground/40 shrink-0">{label}</span>
+      <span className="text-foreground/65 min-w-0 truncate pl-4">{value}</span>
     </span>
   ) : null;

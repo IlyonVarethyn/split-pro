@@ -15,6 +15,7 @@ export const getCurrencyHelpers = ({
     currency,
     minimumFractionDigits: 0,
     maximumFractionDigits: decimalDigits,
+    useGrouping: true,
   });
 
   const currencySymbol =

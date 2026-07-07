@@ -3,6 +3,7 @@ import { clsx } from 'clsx';
 import {
   BarChart2,
   Check,
+  ChevronDown,
   DollarSign,
   Equal,
   type LucideIcon,
@@ -16,6 +17,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useState,
 } from 'react';
 import { useTranslationWithUtils } from '~/hooks/useTranslationWithUtils';
 
@@ -29,7 +31,8 @@ import { EntityAvatar } from '../ui/avatar';
 import { CurrencyInput } from '../ui/currency-input';
 import { AppDrawer, AppDrawerClose } from '../ui/drawer';
 import { Input } from '../ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Tabs, TabsContent } from '../ui/tabs';
 import { Button } from '../ui/button';
 
 export const PayerSelectionForm: React.FC<PropsWithChildren> = ({ children }) => {
@@ -109,23 +112,106 @@ const useSplitTabsController = (allowedSplitTypes?: readonly SplitType[]) => {
   return { splitProps, activeSplitType, onTabChange };
 };
 
+const SplitTypePicker: React.FC<{
+  splitProps: SplitSectionProps[];
+  activeSplitType: SplitType;
+  onTabChange: (value: string) => void;
+}> = ({ splitProps, activeSplitType, onTabChange }) => {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const activeProps = splitProps.find((props) => props.splitType === activeSplitType);
+
+  const handleSelect = useCallback(
+    (value: string) => {
+      onTabChange(value);
+      setOpen(false);
+    },
+    [onTabChange],
+  );
+
+  if (!activeProps) {
+    return null;
+  }
+
+  const ActiveIcon = activeProps.iconComponent;
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="bg-foreground/5 flex w-full items-center gap-2.5 rounded-[14px] px-3.5 py-[11px] active:opacity-60"
+        >
+          <div className="bg-primary/14 text-primary flex size-8 shrink-0 items-center justify-center rounded-full">
+            <ActiveIcon className="h-4 w-4" />
+          </div>
+          <span className="flex-1 text-left text-[15px] font-medium">
+            {t(
+              `expense_details.add_expense_details.split_type_section.types.${activeSplitType.toLowerCase()}.title`,
+            )}
+          </span>
+          <ChevronDown className="text-foreground/40 h-4 w-4 shrink-0" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        className="bg-surface-sheet border-foreground/8 w-[calc(100vw-2rem)] max-w-sm rounded-[16px] p-1.5"
+      >
+        <div className="flex flex-col">
+          {splitProps.map(({ splitType, iconComponent: Icon }) => (
+            <button
+              key={splitType}
+              type="button"
+              onClick={() => handleSelect(splitType)}
+              className={cn(
+                'flex items-center gap-3 rounded-[12px] px-2.5 py-2.5 text-left active:opacity-60',
+                splitType === activeSplitType && 'bg-primary/8',
+              )}
+            >
+              <div
+                className={cn(
+                  'flex size-8 shrink-0 items-center justify-center rounded-full',
+                  splitType === activeSplitType
+                    ? 'bg-primary/14 text-primary'
+                    : 'bg-foreground/6 text-foreground/60',
+                )}
+              >
+                <Icon className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[14.5px] font-medium">
+                  {t(
+                    `expense_details.add_expense_details.split_type_section.types.${splitType.toLowerCase()}.title`,
+                  )}
+                </div>
+                <div className="text-foreground/45 text-[12.5px]">
+                  {t(
+                    `expense_details.add_expense_details.split_type_section.types.${splitType.toLowerCase()}.description`,
+                  )}
+                </div>
+              </div>
+              {splitType === activeSplitType ? (
+                <Check className="text-primary h-4 w-4 shrink-0" />
+              ) : null}
+            </button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
 const SplitTypeTabs: React.FC<{
   splitProps: SplitSectionProps[];
   activeSplitType: SplitType;
   onTabChange: (value: string) => void;
 }> = ({ splitProps, activeSplitType, onTabChange }) => (
   <Tabs value={activeSplitType} className="w-full" onValueChange={onTabChange}>
-    <TabsList className="bg-foreground/5 h-auto w-full justify-between gap-0.5 rounded-[12px] p-1">
-      {splitProps.map(({ splitType, iconComponent: Icon }) => (
-        <TabsTrigger
-          key={splitType}
-          value={splitType}
-          className="text-foreground/45 data-[state=active]:bg-foreground/10 data-[state=active]:text-foreground flex-1 rounded-[9px] py-2 text-[12px] font-semibold transition-all duration-[220ms]"
-        >
-          <Icon className="h-5 w-5" />
-        </TabsTrigger>
-      ))}
-    </TabsList>
+    <SplitTypePicker
+      splitProps={splitProps}
+      activeSplitType={activeSplitType}
+      onTabChange={onTabChange}
+    />
     {splitProps.map((props) => (
       <TabsContent key={props.splitType} value={props.splitType}>
         <SplitSection {...props} />

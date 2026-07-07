@@ -163,10 +163,10 @@ const AddMembers: React.FC<{
           <Button
             variant="ghost"
             key={friend.id}
-            className="focus:text-foreground flex items-center justify-between px-0 py-3.5 active:opacity-60"
+            className="focus:text-foreground flex h-auto items-center justify-between px-0 py-3.5 active:opacity-60"
             onClick={() => onUserSelect(friend.id)}
           >
-            <div className={clsx('flex items-center gap-2 rounded-md py-1.5')}>
+            <div className={clsx('flex items-center gap-3 rounded-md py-1.5')}>
               <EntityAvatar entity={friend} />
               <p>{friend.name ?? friend.email}</p>
             </div>

@@ -234,22 +234,27 @@
         "total_split": "Total split",
         "types": {
           "adjustment": {
+            "description": "Split equally, then fine-tune individual amounts",
             "remaining_to_split_equally": "Remaining to split equally",
             "title": "Adjustment"
           },
           "equal": {
+            "description": "Split the total equally between everyone selected",
             "per_person": "per person",
             "title": "Equal"
           },
           "exact": {
+            "description": "Enter the exact amount each person owes",
             "remaining": "Remaining",
             "title": "Exact"
           },
           "percentage": {
+            "description": "Split by a percentage of the total for each person",
             "remaining": "Remaining",
             "title": "Percentage"
           },
           "share": {
+            "description": "Split by shares — give each person a weight",
             "shares": "Share(s)",
             "title": "Share",
             "total_shares": "Total shares"

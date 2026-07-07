@@ -218,22 +218,27 @@
         "total_split": "Totale ripartito",
         "types": {
           "adjustment": {
+            "description": "Dividi in parti uguali, poi correggi gli importi singoli",
             "remaining_to_split_equally": "Rimanente da dividere equamente",
             "title": "Aggiustamento"
           },
           "equal": {
+            "description": "Dividi il totale in parti uguali tra i partecipanti",
             "per_person": "a persona",
             "title": "Uguale"
           },
           "exact": {
+            "description": "Inserisci l'importo esatto dovuto da ciascuno",
             "remaining": "Rimanenti",
             "title": "Esatto"
           },
           "percentage": {
+            "description": "Dividi in base a una percentuale del totale",
             "remaining": "Rimanenti",
             "title": "Percentuale"
           },
           "share": {
+            "description": "Dividi in quote — assegna un peso a ciascuno",
             "shares": "Condivisione/i",
             "title": "Condivisioni",
             "total_shares": "Condivisioni totali"
