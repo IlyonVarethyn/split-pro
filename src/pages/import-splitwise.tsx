@@ -167,7 +167,7 @@ const ImportSpliwisePage: NextPageWithUser = () => {
 
         <label
           htmlFor="splitwise-json"
-          className="border-foreground/18 mt-4 flex cursor-pointer flex-col items-center gap-2 rounded-[16px] border-[1.5px] border-dashed py-7"
+          className="border-foreground/18 mt-4 flex cursor-pointer flex-col items-center gap-2 rounded-[16px] border-[1.5px] border-dashed py-7 active:opacity-80"
         >
           <UploadCloud className="text-foreground/45 h-6 w-6" strokeWidth={1.8} />
           <p className="text-foreground/50 text-[13.5px]">

@@ -65,7 +65,7 @@ export const UploadFile: React.FC = () => {
     <Label
       htmlFor="picture"
       className={cn(
-        'flex cursor-pointer items-center gap-1.5 rounded-full px-3.5 py-2 text-[12.5px] font-semibold',
+        'flex cursor-pointer items-center gap-1.5 rounded-full px-3.5 py-2 text-[12.5px] font-semibold active:scale-95',
         isAttached ? 'bg-primary/14 text-primary' : 'bg-foreground/7 text-foreground/70',
       )}
     >

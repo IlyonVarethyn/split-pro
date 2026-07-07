@@ -14,7 +14,7 @@ export const CategoryPicker: React.FC<{
 
   const trigger = useMemo(
     () => (
-      <div className="bg-foreground/7 text-foreground/70 flex cursor-pointer items-center justify-center rounded-full px-3.5 py-2 text-[12.5px] font-semibold">
+      <div className="bg-foreground/7 text-foreground/70 flex cursor-pointer items-center justify-center rounded-full px-3.5 py-2 text-[12.5px] font-semibold active:scale-95">
         <CategoryIcon category={category} size={16} />
       </div>
     ),

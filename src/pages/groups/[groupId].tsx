@@ -415,7 +415,7 @@ const BalancePage: NextPageWithUser<{
                   </div>
                 </div>
 
-                <Label className="border-foreground/8 flex cursor-pointer items-center justify-between gap-4 border-b py-[15px]">
+                <Label className="border-foreground/8 flex cursor-pointer items-center justify-between gap-4 border-b py-[15px] active:opacity-70">
                   <p>
                     <span className="block text-[15px] font-medium">
                       {t('group_details.group_info.simplify_debts')}
@@ -443,7 +443,7 @@ const BalancePage: NextPageWithUser<{
                     }}
                   />
                 </Label>
-                <Label className="border-foreground/8 flex cursor-pointer items-center justify-between gap-4 border-b py-[15px]">
+                <Label className="border-foreground/8 flex cursor-pointer items-center justify-between gap-4 border-b py-[15px] active:opacity-70">
                   <p>
                     <span className="block text-[15px] font-medium">
                       {t('group_details.group_info.archive_group')}

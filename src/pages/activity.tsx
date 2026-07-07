@@ -104,7 +104,7 @@ const ActivityPage: NextPageWithUser = ({ user }) => {
                 <div className="mt-0.5 flex-shrink-0">
                   <EntityAvatar entity={actor} size={34} />
                 </div>
-                <div className={isDeleted ? 'text-negative/60 min-w-0' : 'min-w-0'}>
+                <div className={isDeleted ? 'text-negative/80 min-w-0' : 'min-w-0'}>
                   {e.expense.deletedByUser ? (
                     <p className="text-[14px] leading-[1.45]">
                       <span className="font-semibold">

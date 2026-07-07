@@ -320,7 +320,7 @@ export const UpdateDetails: React.FC<{
                 />
                 <Label
                   htmlFor="profile-image-input"
-                  className="border-surface-sheet bg-foreground/10 absolute -right-[3px] -bottom-[3px] flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border-2"
+                  className="border-surface-sheet bg-foreground/10 absolute -right-[3px] -bottom-[3px] flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border-2 active:scale-[.92]"
                 >
                   <Pencil className="text-foreground/70 h-3 w-3" />
                   <Input

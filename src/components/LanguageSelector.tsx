@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { Globe } from 'lucide-react';
+import { Check, Globe } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { getSupportedLanguages } from '~/utils/i18n/client';
 import { cn } from '~/lib/utils';
@@ -52,7 +52,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ className = 
         size="sm"
         onClick={handleToggleOpen}
         className={cn(
-          'flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',
+          'text-foreground/60 hover:text-foreground/80 flex items-center gap-2',
           className,
         )}
       >
@@ -67,25 +67,22 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ className = 
           <div className="fixed inset-0 z-10" onClick={handleClose} />
 
           {/* Dropdown */}
-          <div className="absolute top-full right-0 z-20 mt-1 min-w-[120px] rounded-md border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
-            <div className="py-1">
-              {supportedLanguages.map((language) => (
-                <button
-                  key={language.code}
-                  onClick={getLanguageClickHandler(language.code)}
-                  className={`block w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    i18n.language === language.code
-                      ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
-                      : 'text-gray-700 dark:text-gray-300'
-                  }`}
-                >
-                  {language.name}
-                  {i18n.language === language.code && (
-                    <span className="ml-2 text-blue-600 dark:text-blue-400">✓</span>
-                  )}
-                </button>
-              ))}
-            </div>
+          <div className="bg-surface-sheet border-foreground/8 absolute top-full right-0 z-20 mt-1 min-w-[140px] rounded-[14px] border py-1 shadow-lg">
+            {supportedLanguages.map((language) => (
+              <button
+                key={language.code}
+                onClick={getLanguageClickHandler(language.code)}
+                className={cn(
+                  'flex w-full items-center justify-between gap-2 px-3.5 py-2 text-left text-sm active:opacity-60',
+                  i18n.language === language.code
+                    ? 'text-primary'
+                    : 'text-foreground/70 hover:text-foreground',
+                )}
+              >
+                {language.name}
+                {i18n.language === language.code && <Check className="size-4 shrink-0" />}
+              </button>
+            ))}
           </div>
         </>
       )}

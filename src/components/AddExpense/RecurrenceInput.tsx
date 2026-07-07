@@ -81,7 +81,7 @@ export const RecurrenceInput: React.FC<RecurrenceInputProps> = ({
               <button
                 key={preset.key}
                 type="button"
-                className="border-foreground/6 flex min-h-14 w-full items-center justify-between border-b text-left last:border-b-0"
+                className="border-foreground/6 flex min-h-14 w-full items-center justify-between border-b text-left last:border-b-0 active:opacity-55"
                 data-value={preset.value}
                 onClick={handlePresetClick}
               >

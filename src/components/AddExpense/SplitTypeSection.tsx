@@ -63,7 +63,7 @@ const PayerRow = ({ p, isPaying }: { p: Participant; isPaying: boolean }) => {
 
   return (
     <AppDrawerClose
-      className="border-foreground/6 flex items-center justify-between border-b px-1 py-3"
+      className="border-foreground/6 flex items-center justify-between border-b px-1 py-3 active:opacity-55"
       onClick={onClick}
     >
       <div className="flex min-w-0 items-center gap-3">
@@ -443,7 +443,7 @@ const ParticipantRow = ({
       key={p.id}
       className={clsx(
         'border-foreground/7 flex items-center justify-between border-b py-3',
-        isBoolean && 'cursor-pointer',
+        isBoolean && 'cursor-pointer active:opacity-55',
       )}
       onClick={onClick}
     >
