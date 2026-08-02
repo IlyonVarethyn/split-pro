@@ -85,7 +85,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
           <ScreenTransition>
             {title ? (
               <div className="mb-2 flex items-center justify-between px-4 py-4">
-                <div className="text-foreground text-[33px] leading-tight font-bold tracking-[-0.6px]">
+                <div className="text-foreground min-w-0 flex-1 text-[33px] leading-tight font-bold tracking-[-0.6px]">
                   {title}
                 </div>
                 {actions}
